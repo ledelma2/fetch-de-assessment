@@ -41,7 +41,7 @@ services:
       KAFKA_TOPIC: user-login
     networks:
       - kafka-network
-      
+
 networks:
   kafka-network:
     driver: bridge
