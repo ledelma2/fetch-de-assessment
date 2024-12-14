@@ -19,7 +19,7 @@
     - Bash for linux/mac
     - Powershell for windows
     - [x] Compose up docker-compose.yml
-    - [ ] Create network if it doesn't exist
+    - [x] Create network if it doesn't exist
     - [ ] Start zookeeper
     - [ ] Start kafka and broker(s)
     - [ ] Verify installations
