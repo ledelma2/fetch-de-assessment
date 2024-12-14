@@ -4,8 +4,9 @@
 # Steps to Run Pipeline
 - Clone the repository to a local directory
 - Verify Docker and Python3 have been installed with commands added to your system PATH
+- Verify the docker engine is up, running, and accessible
 - Open a terminal/command prompt/powershell window and navigate to the repository you cloned
-- Run the `run_pipeline.bat` batch script to begin enviornment setup
+- Run the `run_pipeline.py` python script to begin enviornment setup
 - When finished running the pipeline press any key in the terminal/command prompt/powershell window and the enviornment will teardown
 
 ## TODO
