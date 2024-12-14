@@ -17,7 +17,7 @@
     - CLI Scripts with config files
     - Bash for linux/mac
     - Powershell for windows
-    - [ ] Compose up docker-compose.yml
+    - [x] Compose up docker-compose.yml
     - [ ] Create network if it doesn't exist
     - [ ] Start zookeeper
     - [ ] Start kafka and broker(s)
