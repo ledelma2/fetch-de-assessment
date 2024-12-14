@@ -1,3 +1,3 @@
 Set-Location ../..
-Get-ChildItem
+Write-Host "Running Docker Compose Up..."
 docker compose up

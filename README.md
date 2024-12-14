@@ -49,4 +49,4 @@
     - Powershell for windows
     - [ ] Error handling
     - [ ] Delete containers
-    - [ ] Compose down docker-compose.yml
+    - [x] Compose down docker-compose.yml

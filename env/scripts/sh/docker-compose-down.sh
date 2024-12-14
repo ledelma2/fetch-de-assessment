@@ -1,3 +1,3 @@
-cd ..\docker
-echo Running Docker Compose Down...
+cd ..\..
+echo "Running Docker Compose Down..."
 docker-compose down
