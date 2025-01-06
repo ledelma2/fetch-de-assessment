@@ -1,3 +1,3 @@
-cd /env/scripts/sh
-./docker-compose-up.sh
-./docker-create-network.sh
+cd env/scripts/sh
+bash ./docker-compose-up.sh
+bash ./docker-create-network.sh

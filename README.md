@@ -10,6 +10,9 @@
 - When finished running the pipeline press any key in the terminal/command prompt/powershell window and the enviornment will teardown
 
 ## TODO
+- Ask about using version 3 of docker
+    - Docker Swarm
+    - Compose file healthchecks
 - [x] Create single point of entry script
     - Python3
     - [x] Runs the setup for Windows
@@ -19,8 +22,8 @@
     - Bash for linux/mac
     - Powershell for windows
     - [ ] Compose up docker-compose-kafka-cluster.yml
-        - [ ] Verify cluster and container startup
-        - [ ] Verify network startup
+        - [ ] Parse through running containers to verify cluster and container startup
+        - [x] Verify network startup
         - [ ] Create topics
             - [ ] user-login
             - [ ] \[tbd\]
