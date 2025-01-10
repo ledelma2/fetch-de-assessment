@@ -19,19 +19,16 @@
     - CLI Scripts with config files and enviornment variables
     - Bash for linux/mac
     - Powershell for windows
-    - [ ] Compose up docker-compose-kafka-cluster.yml
-        - [ ] Parse through running containers to verify cluster and container startup
-        - [x] Verify network startup
-        - [ ] Create topics
-            - [ ] user-login
-            - [ ] \[tbd\]
+    - [x] Compose up docker-compose.zookeeper.yml
+        - [x] Add health check
+    - [ ] Compose up docker-compose.kafka.yml
+        - [ ] Add health check
     - [ ] Compose up docker-compose-producer-cluster.yml
-        - [ ] Verify cluster and container startup
-        - [ ] Check topic message receipt in kafka cluster
+        - [ ] Add health check
     - [ ] Compose up docker-compose-consumer-cluster.yml
         - [ ] Build and tag consumer image\(s\)
         - [ ] Verify cluster and container startup
-        - [ ] Heartbeat/Initial Health Check
+        - [ ] Health Checks
             - [ ] Ingestor
             - [ ] Processor
             - [ ] Messenger
@@ -47,6 +44,7 @@
     - Clean the data?
 - [ ] Create messenger app
     - Python 3 or Java
+    - [ ] Create topic \[tbd\] if not exists
     - [ ] Send the messages to the sink topic "\[tbd\]"
 - [ ] Add automation for environment teardown
     - CLI Scripts with config files and enviornment variables
