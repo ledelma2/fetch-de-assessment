@@ -5,14 +5,12 @@
 - Clone the repository to a local directory
 - Verify Docker Desktop and Python3 have been installed with commands added to your system PATH
 - Verify the docker engine is up, running, and accessible
-- Open a terminal/command prompt/powershell window and navigate to the repository you cloned
+- Open a terminal, command prompt, or powershell window and navigate to the cloned repository
 - Run the `run_pipeline.py` python script to begin enviornment setup
-- When finished running the pipeline press any key in the terminal/command prompt/powershell window and the enviornment will teardown
+    - For Windows the command is `python run_pipeline.py`
+    - For Mac/Linux the command is `python3 run_pipeline.py`
 
 ## TODO
-- Ask about using version 3 of docker
-    - Docker Swarm
-    - Compose file healthchecks
 - [x] Create single point of entry script
     - Python3
     - [x] Runs the setup for Windows
@@ -61,17 +59,3 @@
         - [ ] Verify cluster and container shutdown
     - [ ] Compose down docker-compose-consumer-cluster.yml
         - [ ] Verify cluster and container shutdown
-- [ ] Container Orchestration
-    - [ ] Scaling
-        - [ ] Dynamic Scaling
-            - [ ] Kafka Cluster Containers
-            - [ ] Consumer Cluster Containers
-                - One cluster per consumer?
-                - Have each consumer service get a cluster?
-        - [ ] Manual Scaling
-            - [ ] Producer Cluster
-            - [ ] Kafka Topic Partitions
-    - [ ] Balancing/Scheduling
-        - [ ] Kafka Cluster Containers
-        - [ ] Consumer Cluster Containers
-    - Docker Swarm?
