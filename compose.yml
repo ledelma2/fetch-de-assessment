@@ -1,0 +1,6 @@
+include:
+  - env/network/docker-compose.networks.yml # declare the network
+  - env/kafka/docker-compose.zookeeper.yml  # declare zookeeper service
+  - env/kafka/docker-compose.kafka.yml  # declare kafka broker
+  - env/consumer/docker-compose.consumer.yml # declare the consumer
+  - env/producer/docker-compose.producer.yml # declare the producer

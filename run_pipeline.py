@@ -7,13 +7,13 @@ def start_pipeline_sh():
     """
     Starts the data pipeline bash script.
     """
-    subprocess.run(['bash', './env/scripts/sh/run-pipeline.sh'])
+    subprocess.run(['bash', './src/sh/run-pipeline.sh'])
 
 def start_pipeline_ps1():
     """
     Starts the data pipeline ps1 script.
     """
-    subprocess.run(['powershell', "-ExecutionPolicy", "Bypass", '-File', './env/scripts/ps1/run-pipeline.ps1'])
+    subprocess.run(['powershell', "-ExecutionPolicy", "Bypass", '-File', './src/ps1/run-pipeline.ps1'])
 
 def main():
     """

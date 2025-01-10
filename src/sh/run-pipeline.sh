@@ -1,2 +1,2 @@
-cd env/scripts/sh
+cd src/sh
 bash ./docker-compose-up.sh
