@@ -31,7 +31,6 @@
     - [ ] Compose up docker-compose-consumer-cluster.yml
         - [ ] Build and tag consumer image\(s\)
         - [ ] Verify cluster and container startup
-        - [ ] Heartbeat/Initial Health Check
             - [ ] Ingestor
             - [ ] Processor
             - [ ] Messenger
