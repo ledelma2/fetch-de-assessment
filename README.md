@@ -23,8 +23,8 @@
         - [x] Add health check
     - [x] Compose up docker-compose.kafka.yml
         - [x] Add health check
-    - [ ] Compose up docker-compose-producer-cluster.yml
-        - [ ] Add health check
+    - [x] Compose up docker-compose-producer-cluster.yml
+        - [x] Add health check
     - [ ] Compose up docker-compose-consumer-cluster.yml
         - [ ] Build and tag consumer image\(s\)
         - [ ] Verify cluster and container startup

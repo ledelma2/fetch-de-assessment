@@ -7,8 +7,10 @@ services:
   my-python-producer:
     image: mpradeep954/fetch-de-data-gen
     depends_on:
-      - kafka
-    restart: on-failure:10
+      zookeeper:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
     ports:
       - 9093:9093
     environment:
@@ -16,3 +18,4 @@ services:
       KAFKA_TOPIC: user-login
     networks:
       - kafka-network
+    restart: on-failure:10
