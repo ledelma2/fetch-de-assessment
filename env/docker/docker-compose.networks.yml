@@ -1,0 +1,8 @@
+# docker-compose.networks.yml
+# This file defines the network setup.
+
+version: '2'
+
+networks:
+  kafka-network:
+    driver: bridge
