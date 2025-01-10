@@ -35,6 +35,7 @@
 - [ ] Create ingestor app
     - Python 3 or Java
     - [ ] Ingest the messages from the producer topic "user-login"
+        - [ ] Create topic if doesn't exist
     - [ ] Send the messages to the processor app
 - [ ] Create processor app
     - Python 3 or Java
