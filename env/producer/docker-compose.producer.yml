@@ -17,5 +17,5 @@ services:
       BOOTSTRAP_SERVERS: kafka:9092
       KAFKA_TOPIC: user-login
     networks:
-      - kafka-network
+      - kafka-producer-network
     restart: on-failure:10

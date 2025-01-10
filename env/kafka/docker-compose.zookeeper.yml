@@ -12,7 +12,7 @@ services:
     ports:
       - 22181:2181
     networks:
-      - kafka-network
+      - kafka-zookeeper-network
     healthcheck:
       test: ["CMD", "nc", "-z", "localhost", "2181"]
       interval: 30s

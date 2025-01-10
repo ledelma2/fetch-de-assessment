@@ -19,14 +19,21 @@
     - CLI Scripts with config files and enviornment variables
     - Bash for linux/mac
     - Powershell for windows
-    - [x] Compose up docker-compose.zookeeper.yml
+    - [x] docker-compose.networks.yml
+        - [x] kafka-zookeeper-network
+        - [x] kafka-producer-network
+        - [x] kafka-consumer-network
+    - [x] docker-compose.zookeeper.yml
         - [x] Add health check
-    - [x] Compose up docker-compose.kafka.yml
+    - [ ] docker-compose.kafka.yml
         - [x] Add health check
-    - [x] Compose up docker-compose-producer-cluster.yml
+        - [ ] Create topics
+            - [ ] user-login
+            - [ ] processed-user-logins
+    - [x] docker-compose.producer.yml
         - [x] Add service_healthy requirements
-    - [ ] Compose up docker-compose-consumer-cluster.yml
-        - [ ] Build and tag consumer image\(s\)
+    - [ ] docker-compose.consumer.yml
+        - [ ] Build and tag consumer image
         - [ ] Verify cluster and container startup
         - [ ] Health Checks
             - [ ] Ingestor
@@ -35,7 +42,6 @@
 - [ ] Create ingestor app
     - Python 3 or Java
     - [ ] Ingest the messages from the producer topic "user-login"
-        - [ ] Create topic if doesn't exist
     - [ ] Send the messages to the processor app
 - [ ] Create processor app
     - Python 3 or Java
@@ -45,8 +51,7 @@
     - Clean the data?
 - [ ] Create messenger app
     - Python 3 or Java
-    - [ ] Create topic \[tbd\] if not exists
-    - [ ] Send the messages to the sink topic "\[tbd\]"
+    - [ ] Send the messages to the sink topic "processed-user-logins"
 - [ ] Add automation for environment teardown
     - CLI Scripts with config files and enviornment variables
     - Bash for linux/mac

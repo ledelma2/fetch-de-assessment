@@ -13,7 +13,9 @@ services:
       - 9092:9092
       - 29092:29092
     networks:
-      - kafka-network
+      - kafka-zookeeper-network
+      - kafka-producer-network
+      - kafka-consumer-network
     environment:
       KAFKA_BROKER_ID: 0
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -23,6 +25,9 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_CREATE_TOPICS: >
+        user-login:3:1,
+        processed-user-logins:3:1
     healthcheck:
       test: ["CMD", "nc", "-z", "localhost", "9092"]
       interval: 30s
