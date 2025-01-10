@@ -25,11 +25,11 @@
         - [x] kafka-consumer-network
     - [x] docker-compose.zookeeper.yml
         - [x] Add health check
-    - [ ] docker-compose.kafka.yml
+    - [x] docker-compose.kafka.yml
         - [x] Add health check
-        - [ ] Create topics
-            - [ ] user-login
-            - [ ] processed-user-logins
+        - [x] Create topics
+            - [x] user-login
+            - [x] processed-user-logins
     - [x] docker-compose.producer.yml
         - [x] Add service_healthy requirements
     - [ ] docker-compose.consumer.yml
