@@ -1,6 +1,6 @@
-import os
-import subprocess
 import platform
+import subprocess
+import traceback
 
 
 def start_pipeline_sh():
@@ -16,6 +16,9 @@ def start_pipeline_ps1():
     subprocess.run(['powershell', "-ExecutionPolicy", "Bypass", '-File', './env/scripts/ps1/run-pipeline.ps1'])
 
 def main():
+    """
+    Main program loop for running the pipeline.
+    """
     if platform.system() == 'Windows':
         print("Running on Windows...")
         start_pipeline_ps1()
@@ -24,4 +27,12 @@ def main():
         start_pipeline_sh()
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print("An exception occurred...")
+        print(f"Type: {type(e).__name__}")
+        print(f"Message: {e}")
+        print(f"Arguments: {e.args}")
+        print("Traceback:")
+        traceback.print_exc()

@@ -1,3 +1,2 @@
-Set-Location ../..
 Write-Host "Running Docker Compose Up..."
-docker compose up
+docker compose -f ..\..\docker-compose.yml up
