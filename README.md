@@ -21,8 +21,8 @@
     - Powershell for windows
     - [x] Compose up docker-compose.zookeeper.yml
         - [x] Add health check
-    - [ ] Compose up docker-compose.kafka.yml
-        - [ ] Add health check
+    - [x] Compose up docker-compose.kafka.yml
+        - [x] Add health check
     - [ ] Compose up docker-compose-producer-cluster.yml
         - [ ] Add health check
     - [ ] Compose up docker-compose-consumer-cluster.yml
