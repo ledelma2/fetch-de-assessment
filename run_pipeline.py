@@ -2,6 +2,9 @@ import platform
 import subprocess
 import traceback
 
+"""
+This script is the entry point for all users who want to run the pipeline.
+"""
 
 def start_pipeline_sh():
     """

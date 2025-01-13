@@ -1,2 +1,19 @@
 # docker-compose.consumer.yml
 # This file defines the consumer service setup.
+
+version: '2'
+
+services:
+  my-python-consumer:
+    build:
+      context: ../../src
+    image: fetch-de-assessment-consumer:latest
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    ports:
+      - 9094:9094
+    networks:
+      - kafka-consumer-network
