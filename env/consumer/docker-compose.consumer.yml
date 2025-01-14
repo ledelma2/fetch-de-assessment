@@ -5,9 +5,7 @@ version: '2'
 
 services:
   my-python-consumer:
-    build:
-      context: ../../src
-    image: fetch-de-assessment-consumer:latest
+    build: ../../src
     depends_on:
       zookeeper:
         condition: service_healthy
@@ -15,5 +13,11 @@ services:
         condition: service_healthy
     ports:
       - 9094:9094
+    environment:
+      AUTO_OFFSET_RESET: earliest
+      BOOTSTRAP_SERVER: kafka:9092
+      CONSUMER_GROUP_ID: fetch-de-assessment-consumer
+      PROCESSED_LOGIN_TOPIC: processed-user-logins
+      USER_LOGIN_TOPIC: user-login
     networks:
       - kafka-consumer-network

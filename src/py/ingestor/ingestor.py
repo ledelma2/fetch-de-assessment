@@ -48,9 +48,11 @@ class Ingestor:
         try:
             messages = self.consumer.consume(num_messages=message_limit, timeout=wait_time)
             if messages:
-                return [msg.value().decode('utf-8') for msg in messages]
-            else:
-                return None
-        except Exception as e:
-            print(f"Error consuming messages: {e}")
+                if(messages[0].error()):
+                    print(f"Error consuming messages: {messages[0].error()}")
+                else:
+                    return [msg.value().decode('utf-8') for msg in messages]
             return None
+        except Exception as e:
+            print(f"Error consuming messages in ingestor: {e}")
+            raise

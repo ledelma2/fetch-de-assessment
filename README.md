@@ -3,8 +3,16 @@
 
 # Steps to Run Pipeline
 - Clone the repository to a local directory
-- Verify Docker Desktop and Python3 have been installed with commands added to your system PATH
-- Verify the docker engine is up, running, and accessible
+- Download and install the latest version of Docker Desktop
+    - Optionally, the standalone Docker Engine and Docker Compose Tool can be used instead of the Desktop app, though additional setup/debugging may be required 
+- Verify the Docker CLI commands have been added to your system PATH
+    - This can be done with the `docker help` command from a terminal window
+- Download and install the latest version of Python 3
+- Verify the Python CLI commands have been added to your system PATH
+    - For windows users, this can be done with the `python -h` command from a terminal window
+    - For Mac/Linux users, this can be done with the `python3 -h` command from a terminal window
+- Start the Docker Engine by launching the Docker Desktop app or running the command `sudo systemctl start docker` from a terminal window
+- Verify the docker engine is up, running, and accessible with the `docker info` command
 - Open a terminal, command prompt, or powershell window and navigate to the cloned repository
 - Run the `run_pipeline.py` python script to begin enviornment setup
     - For Windows the command is `python run_pipeline.py`
@@ -15,7 +23,7 @@
     - Python3
     - [x] Runs the setup for Windows
     - [x] Runs the setup for other OS's
-- [ ] Add automation for enviornment setup
+- [x] Add automation for enviornment setup
     - CLI Scripts with config files and enviornment variables
     - Bash for linux/mac
     - Powershell for windows
@@ -32,26 +40,29 @@
             - [x] processed-user-logins
     - [x] docker-compose.producer.yml
         - [x] Add service_healthy requirements
-    - [ ] docker-compose.consumer.yml
-        - [ ] Build and tag consumer image
-        - [ ] Verify cluster and container startup
-        - [ ] Health Checks
-            - [ ] Ingestor
-            - [ ] Processor
-            - [ ] Messenger
-- [ ] Create ingestor app
-    - Python 3 or Java
-    - [ ] Ingest the messages from the producer topic "user-login"
-    - [ ] Send the messages to the processor app
+    - [x] docker-compose.consumer.yml
+        - [x] Build and tag consumer image
+        - [x] Add service_healthy requirements
+- [ ] Create consumer app
+    - [x] Ingest consumed messages from the topic "user-login"
+    - [ ] Process the messages and output metrics/stats
+    - [ ] Send processed messages to the topic "processed-user-logins"
+- [x] Create ingestor app
+    - Python 3
+    - [x] Set up kafka consumer member using confluent-kafka-python
+    - [x] Consume messages from a topic
+    - [x] Graceful teardown on error/exit
 - [ ] Create processor app
-    - Python 3 or Java
+    - Python 3
     - [ ] "Process" the messages
-    - [ ] Send the data to the messenger app
     - Send metrics to dashboards?
     - Clean the data?
+    - Output statstics to console window?
 - [ ] Create messenger app
-    - Python 3 or Java
-    - [ ] Send the messages to the sink topic "processed-user-logins"
+    - Python 3
+    - [ ] Set up kafka producer member using confluent-kafka-python
+    - [ ] Ingest messages into a topic
+    - [ ] Graceful teardown on error/exit
 - [ ] Add automation for environment teardown
     - CLI Scripts with config files and enviornment variables
     - Bash for linux/mac
