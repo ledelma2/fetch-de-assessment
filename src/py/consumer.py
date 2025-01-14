@@ -34,7 +34,7 @@ def main():
     with Ingestor(os.environ['BOOTSTRAP_SERVER'], os.environ['CONSUMER_GROUP_ID'], os.environ['AUTO_OFFSET_RESET'], os.environ['USER_LOGIN_TOPIC']) as ingstr:
         while running:
             # Ingest message from ingestor
-            message = ingstr.consume_message()
+            message = ingstr.consume_message(os.environ['CONSUMER_MESSAGE_LIMIT'], os.environ['CONSUMER_WAIT_TIME'])
             print(message)
 
             # Send message to processor for processing

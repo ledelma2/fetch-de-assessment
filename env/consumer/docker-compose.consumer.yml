@@ -17,6 +17,8 @@ services:
       AUTO_OFFSET_RESET: earliest
       BOOTSTRAP_SERVER: kafka:9092
       CONSUMER_GROUP_ID: fetch-de-assessment-consumer
+      CONSUMER_MESSAGE_LIMIT: 1
+      CONSUMER_WAIT_TIME: 1.0
       PROCESSED_LOGIN_TOPIC: processed-user-logins
       USER_LOGIN_TOPIC: user-login
     networks:
