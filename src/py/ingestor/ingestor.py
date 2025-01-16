@@ -1,4 +1,4 @@
-from confluent_kafka import Consumer
+from confluent_kafka import Consumer, Message
 from typing import List, Optional
 
 class Ingestor:
@@ -43,16 +43,33 @@ class Ingestor:
             wait_time (float, optional): The specified time in seconds to wait when message_limit has not been hit and there are no messages to consume. Default time is 1.
 
         Returns:
-            Optional[List[str]]: A list of messages, as strings, if any messages are ingested. None if no messages are available or if an error occurs.
+            Optional[List[str]]: A list of messages, as strings, of all error free messages consumed. None if no messages are available.
         """
         try:
-            messages = self.consumer.consume(num_messages=message_limit, timeout=wait_time)
-            if messages:
-                if(messages[0].error()):
-                    print(f"Error consuming messages: {messages[0].error()}")
-                else:
-                    return [msg.value().decode('utf-8') for msg in messages]
-            return None
+            consumed_messages = self.consumer.consume(num_messages=message_limit, timeout=wait_time)
+            if consumed_messages:
+                return self.__get_unerrored_messages(consumed_messages)
+            else:
+                return None
         except Exception as e:
-            print(f"Error consuming messages in ingestor: {e}")
+            print(f"Fatal error consuming messages in ingestor: {e}")
             raise
+
+    def __get_unerrored_messages(self, consumed_messages: List[Message]) -> List[str]:
+        """
+        Private helper method for getting unerrored messages.
+
+        Args:
+            consumed_messages (List[Message]): The list of messages consumed.
+
+        Returns:
+            List[str]: A list of unerrored messages as strings.
+        """
+        unerrored_messages = []
+        for msg in consumed_messages:
+            # Check for individual message errors
+            if msg.error():
+                print(f"Error consuming message {msg.value().decode('utf-8')}: {msg.error()}")
+            else:
+                unerrored_messages.append(msg.value().decode('utf-8'))
+        return unerrored_messages
