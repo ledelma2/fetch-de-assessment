@@ -34,7 +34,7 @@ class Ingestor:
         # Close connection to cluster and cleanup consumer
         self.consumer.close()
 
-    def consume_message(self, message_limit: int = 1, wait_time: float = 1.0) -> Optional[List[str]]:
+    def consume_messages(self, message_limit: int = 1, wait_time: float = 1.0) -> Optional[List[str]]:
         """
         Consumes messages from the kafka cluster.
 

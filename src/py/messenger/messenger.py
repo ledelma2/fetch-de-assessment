@@ -45,7 +45,7 @@ class Messenger:
         else:
             print(f"Message successfully delivered to topic {msg.topic()} and partition {msg.partition()}")
 
-    def produce_message(self, messages: List[str], wait_time: float = 0.1):
+    def produce_messages(self, messages: List[str], wait_time: float = 0.1):
         """
         Produces messages to a kafka topic.
 

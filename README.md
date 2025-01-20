@@ -43,9 +43,9 @@
     - [x] docker-compose.consumer.yml
         - [x] Build and tag consumer image
         - [x] Add service_healthy requirements
-- [ ] Create consumer app
+- [x] Create consumer app
     - [x] Ingest consumed messages from the topic "user-login"
-    - [ ] Process the messages and output metrics/stats
+    - [x] Process the messages and output metrics/stats
     - [x] Send processed messages to the topic "processed-user-logins"
 - [x] Create ingestor app
     - Python 3

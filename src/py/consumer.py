@@ -1,7 +1,7 @@
 from ingestor.ingestor import Ingestor
 from messenger.messenger import Messenger
+from processor.processor import Processor
 import os
-import processor
 import signal
 import traceback
 
@@ -32,16 +32,18 @@ def main():
     signal.signal(signal.SIGTERM, signal_handler)
 
     with (Ingestor(os.environ["CONSUMER_BOOTSTRAP_SERVER"], os.environ["CONSUMER_GROUP_ID"], os.environ["CONSUMER_AUTO_OFFSET_RESET"], os.environ["CONSUMER_KAFKA_TOPIC"]) as ingstr,
-          Messenger(os.environ["PRODUCER_BOOTSTRAP_SERVER"], os.environ["PRODUCER_CLIENT_ID"], os.environ["PRODUCER_KAFKA_TOPIC"]) as msngr):
+          Messenger(os.environ["PRODUCER_BOOTSTRAP_SERVER"], os.environ["PRODUCER_CLIENT_ID"], os.environ["PRODUCER_KAFKA_TOPIC"]) as msngr,
+          Processor() as prcsr):
         while running:
             # Ingest message from ingestor
-            message = ingstr.consume_message(int(os.environ["CONSUMER_MESSAGE_LIMIT"]), float(os.environ["CONSUMER_WAIT_TIME"]))
+            messages = ingstr.consume_messages(int(os.environ["CONSUMER_MESSAGE_LIMIT"]), float(os.environ["CONSUMER_WAIT_TIME"]))
 
-            if message:
+            if messages:
                 # Send message to processor for processing
+                processed_messages = prcsr.process_messages(messages)
 
                 # Store processed message in new topic with messenger
-                msngr.produce_message(message, float(os.environ["PRODUCER_WAIT_TIME"]))
+                msngr.produce_messages(processed_messages, float(os.environ["PRODUCER_WAIT_TIME"]))
 
 if __name__ == "__main__":
     try:
