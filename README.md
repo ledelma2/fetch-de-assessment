@@ -46,7 +46,7 @@
 - [ ] Create consumer app
     - [x] Ingest consumed messages from the topic "user-login"
     - [ ] Process the messages and output metrics/stats
-    - [ ] Send processed messages to the topic "processed-user-logins"
+    - [x] Send processed messages to the topic "processed-user-logins"
 - [x] Create ingestor app
     - Python 3
     - [x] Set up kafka consumer member using confluent-kafka-python
