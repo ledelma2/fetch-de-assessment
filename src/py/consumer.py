@@ -1,12 +1,12 @@
 from ingestor.ingestor import Ingestor
-import messenger
+from messenger.messenger import Messenger
 import os
 import processor
 import signal
 import traceback
 
 """
-This is the main consumer class for the data pipeline. This class polls/ingests a message from
+This is the main looping block for the data pipeline. This module polls/ingests a message from
 a kafka broker, processes the message, and then stores the processed message in a new topic.
 """
 
@@ -31,15 +31,17 @@ def main():
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
 
-    with Ingestor(os.environ['BOOTSTRAP_SERVER'], os.environ['CONSUMER_GROUP_ID'], os.environ['AUTO_OFFSET_RESET'], os.environ['USER_LOGIN_TOPIC']) as ingstr:
+    with (Ingestor(os.environ["CONSUMER_BOOTSTRAP_SERVER"], os.environ["CONSUMER_GROUP_ID"], os.environ["CONSUMER_AUTO_OFFSET_RESET"], os.environ["CONSUMER_KAFKA_TOPIC"]) as ingstr,
+          Messenger(os.environ["PRODUCER_BOOTSTRAP_SERVER"], os.environ["PRODUCER_CLIENT_ID"], os.environ["PRODUCER_KAFKA_TOPIC"]) as msngr):
         while running:
             # Ingest message from ingestor
-            message = ingstr.consume_message(os.environ['CONSUMER_MESSAGE_LIMIT'], os.environ['CONSUMER_WAIT_TIME'])
-            print(message)
+            message = ingstr.consume_message(int(os.environ["CONSUMER_MESSAGE_LIMIT"]), float(os.environ["CONSUMER_WAIT_TIME"]))
 
-            # Send message to processor for processing
+            if message:
+                # Send message to processor for processing
 
-            # Store processed message in new topic with messenger
+                # Store processed message in new topic with messenger
+                msngr.produce_message(message, float(os.environ["PRODUCER_WAIT_TIME"]))
 
 if __name__ == "__main__":
     try:

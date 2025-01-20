@@ -58,11 +58,11 @@
     - Send metrics to dashboards?
     - Clean the data?
     - Output statstics to console window?
-- [ ] Create messenger app
+- [x] Create messenger app
     - Python 3
-    - [ ] Set up kafka producer member using confluent-kafka-python
-    - [ ] Ingest messages into a topic
-    - [ ] Graceful teardown on error/exit
+    - [x] Set up kafka producer member using confluent-kafka-python
+    - [x] Ingest messages into a topic
+    - [x] Graceful teardown on error/exit
 - [ ] Add automation for environment teardown
     - CLI Scripts with config files and enviornment variables
     - Bash for linux/mac

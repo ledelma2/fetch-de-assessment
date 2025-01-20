@@ -14,12 +14,15 @@ services:
     ports:
       - 9094:9094
     environment:
-      AUTO_OFFSET_RESET: earliest
-      BOOTSTRAP_SERVER: kafka:9092
+      CONSUMER_AUTO_OFFSET_RESET: earliest
+      CONSUMER_BOOTSTRAP_SERVER: kafka:9092
       CONSUMER_GROUP_ID: fetch-de-assessment-consumer
+      CONSUMER_KAFKA_TOPIC: user-login
       CONSUMER_MESSAGE_LIMIT: 1
       CONSUMER_WAIT_TIME: 1.0
-      PROCESSED_LOGIN_TOPIC: processed-user-logins
-      USER_LOGIN_TOPIC: user-login
+      PRODUCER_BOOTSTRAP_SERVER: kafka:9092
+      PRODUCER_CLIENT_ID: fetch-de-assessment-processor
+      PRODUCER_KAFKA_TOPIC: processed-user-logins
+      PRODUCER_WAIT_TIME: 0.01
     networks:
       - kafka-consumer-network

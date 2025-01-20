@@ -17,9 +17,9 @@ class Ingestor:
     def __init__(self, bootstrap_server: str, group_id: str, auto_offset_reset: str, topic_name: str):
         # Create kafka consumer and store topic
         consumer_config = {
-            'bootstrap.servers': bootstrap_server,
-            'group.id': group_id,
-            'auto.offset.reset': auto_offset_reset
+            "bootstrap.servers": bootstrap_server,
+            "group.id": group_id,
+            "auto.offset.reset": auto_offset_reset
         }
 
         self.consumer = Consumer(consumer_config)
@@ -69,7 +69,7 @@ class Ingestor:
         for msg in consumed_messages:
             # Check for individual message errors
             if msg.error():
-                print(f"Error consuming message {msg.value().decode('utf-8')}: {msg.error()}")
+                print(f"Error consuming message {msg.value().decode("utf-8")}: {msg.error()}")
             else:
-                unerrored_messages.append(msg.value().decode('utf-8'))
+                unerrored_messages.append(msg.value().decode("utf-8"))
         return unerrored_messages
