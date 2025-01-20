@@ -34,14 +34,12 @@ def main():
     with Ingestor(os.environ['BOOTSTRAP_SERVER'], os.environ['CONSUMER_GROUP_ID'], os.environ['AUTO_OFFSET_RESET'], os.environ['USER_LOGIN_TOPIC']) as ingstr:
         while running:
             # Ingest message from ingestor
-            message = ingstr.consume_message(int(os.environ['CONSUMER_MESSAGE_LIMIT']), float(os.environ['CONSUMER_WAIT_TIME']))
+            message = ingstr.consume_message(os.environ['CONSUMER_MESSAGE_LIMIT'], os.environ['CONSUMER_WAIT_TIME'])
             print(message)
 
             # Send message to processor for processing
-            #processed_message = procsr.process_message(len(message), message)
 
             # Store processed message in new topic with messenger
-            #msngr.produce_message(processed_message, float(os.enviorn['PRODUCER_WAIT_TIME']))
 
 if __name__ == "__main__":
     try:

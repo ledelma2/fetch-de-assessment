@@ -14,7 +14,7 @@ WORKDIR /usr/src
 COPY py .
 
 # Run the consumer
-CMD ["python3", "data_pipeline.py"]
+CMD ["python3", "consumer.py"]
 
 # Metadata
 LABEL maintainer="Liam Edelman"

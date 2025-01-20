@@ -1,4 +1,3 @@
-import asyncio
 from confluent_kafka import Consumer, Message
 from typing import List, Optional
 
@@ -55,20 +54,6 @@ class Ingestor:
         except Exception as e:
             print(f"Fatal error consuming messages in ingestor: {e}")
             raise
-
-    async def consume_message_async(self, message_limit: int = 1, wait_time: float = 1.0) -> Optional[List[str]]:
-        """
-        Consumes messages from the kafka cluster asynchronously.
-
-        Args:
-            message_limit (int, optional): The specified limit on number of messages to return. Default limit is 1 message.
-            wait_time (float, optional): The specified time in seconds to wait when message_limit has not been hit and there are no messages to consume. Default time is 1.
-
-        Returns:
-            Optional[List[str]]: A list of messages, as strings, of all error free messages consumed. None if no messages are available.
-        """
-        return await asyncio.to_thread(consume_message, message_limit, wait_time)
-
 
     def __get_unerrored_messages(self, consumed_messages: List[Message]) -> List[str]:
         """
