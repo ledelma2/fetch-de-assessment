@@ -43,7 +43,7 @@
     - [x] docker-compose.consumer.yml
         - [x] Build and tag consumer image
         - [x] Add service_healthy requirements
-- [ ] Create consumer app
+- [ ] Create data pipeline app
     - [x] Ingest consumed messages from the topic "user-login"
     - [ ] Process the messages and output metrics/stats
     - [ ] Send processed messages to the topic "processed-user-logins"
@@ -51,18 +51,21 @@
     - Python 3
     - [x] Set up kafka consumer member using confluent-kafka-python
     - [x] Consume messages from a topic
+    - [x] Consume messages async
     - [x] Graceful teardown on error/exit
 - [ ] Create processor app
     - Python 3
     - [ ] "Process" the messages
+    - [ ] "Process" the messages async
     - Send metrics to dashboards?
     - Clean the data?
     - Output statstics to console window?
 - [ ] Create messenger app
     - Python 3
-    - [ ] Set up kafka producer member using confluent-kafka-python
-    - [ ] Ingest messages into a topic
-    - [ ] Graceful teardown on error/exit
+    - [x] Set up kafka producer member using confluent-kafka-python
+    - [ ] Produce messages into a topic
+    - [ ] Produce messages async
+    - [x] Graceful teardown on error/exit
 - [ ] Add automation for environment teardown
     - CLI Scripts with config files and enviornment variables
     - Bash for linux/mac
