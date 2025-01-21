@@ -20,6 +20,7 @@ services:
       CONSUMER_KAFKA_TOPIC: user-login
       CONSUMER_MESSAGE_LIMIT: 1
       CONSUMER_WAIT_TIME: 1.0
+      LOGGER_LEVEL: INFO
       PRODUCER_BOOTSTRAP_SERVER: kafka:9092
       PRODUCER_CLIENT_ID: fetch-de-assessment-processor
       PRODUCER_KAFKA_TOPIC: processed-user-logins

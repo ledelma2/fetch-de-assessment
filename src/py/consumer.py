@@ -16,7 +16,7 @@ running = True
 
 # Setup logger with console handler and formatting
 logger = logging.getLogger("consumer")
-logger.setLevel(logging.INFO)
+logger.setLevel(os.environ["LOGGER_LEVEL"])
 ch = logging.StreamHandler()
 ch.setLevel(logging.INFO)
 formatter = logging.Formatter("[%(levelname)s | %(name)s] %(asctime)s - %(message)s")
