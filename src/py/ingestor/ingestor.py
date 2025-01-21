@@ -1,6 +1,5 @@
 from confluent_kafka import Consumer, Message
-from typing import List, Optional
-import logging
+from logging import Logger
 
 class Ingestor:
     """
@@ -15,7 +14,7 @@ class Ingestor:
         consumer (Consumer): The internal kafka message consumer.
         topic_name (str): The name of the topic to read from.
     """
-    def __init__(self, logger: logging.Logger, bootstrap_server: str, group_id: str, auto_offset_reset: str, topic_name: str):
+    def __init__(self, logger: Logger, bootstrap_server: str, group_id: str, auto_offset_reset: str, topic_name: str):
         # Create kafka consumer and store topic
         consumer_config = {
             "bootstrap.servers": bootstrap_server,
@@ -38,7 +37,7 @@ class Ingestor:
         self.logger.debug("Closing consumer kafka connection...")
         self.consumer.close()
 
-    def consume_messages(self, message_limit: int = 1, wait_time: float = 1.0) -> Optional[List[str]]:
+    def consume_messages(self, message_limit: int = 1, wait_time: float = 1.0) -> list[str] | None:
         """
         Consumes messages from the kafka cluster.
 
@@ -47,7 +46,8 @@ class Ingestor:
             wait_time (float, optional): The specified time in seconds to wait when message_limit has not been hit and there are no messages to consume. Default time is 1.
 
         Returns:
-            Optional[List[str]]: A list of messages, as strings, of all error free messages consumed. None if no messages are available.
+            list[str]: A list of messages, as strings, of all error free messages consumed. 
+            None: If no messages are available.
         """
         try:
             consumed_messages = self.consumer.consume(num_messages=message_limit, timeout=wait_time)
@@ -60,15 +60,15 @@ class Ingestor:
             self.logger.critical(f"Fatal error consuming messages in ingestor: {e}")
             raise
 
-    def __get_unerrored_messages(self, consumed_messages: List[Message]) -> List[str]:
+    def __get_unerrored_messages(self, consumed_messages: list[Message]) -> list[str]:
         """
         Private helper method for getting unerrored messages.
 
         Args:
-            consumed_messages (List[Message]): The list of messages consumed.
+            consumed_messages (list[Message]): The list of messages consumed.
 
         Returns:
-            List[str]: A list of unerrored messages as strings.
+            list[str]: A list of unerrored messages as strings.
         """
         unerrored_messages = []
         for msg in consumed_messages:
