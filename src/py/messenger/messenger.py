@@ -1,5 +1,6 @@
 from confluent_kafka import Producer
 from typing import List
+import logging
 
 class Messenger:
     """
@@ -13,7 +14,7 @@ class Messenger:
         producer (Producer): The internal kafka message producer.
         topic_name (str): The name of the topic to send messages to.
     """
-    def __init__(self, bootstrap_server: str, client_id: str, topic_name: str):
+    def __init__(self, logger: logging.Logger, bootstrap_server: str, client_id: str, topic_name: str):
         producer_config = {
             "bootstrap.servers": bootstrap_server,
             "client.id": client_id,
@@ -21,14 +22,17 @@ class Messenger:
 
         self.producer = Producer(producer_config)
         self.topic_name = topic_name
+        self.logger = logger.getChild("messenger")
 
     def __enter__(self):
         # Wait for callbacks on any messages still waiting
+        self.logger.debug("Setting up producer...")
         self.producer.flush()
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         # Deliver any straggler messages that haven't been sent
+        self.logger.debug("Shutting down producer...")
         self.producer.purge()
         self.producer.flush()
 
@@ -41,9 +45,9 @@ class Messenger:
             msg: The message associated with this specific callback.
         """
         if err is not None:
-            print(f"Failed to deliver message")
+            self.logger.warning(f"Failed to deliver message {msg} due to error {err}")
         else:
-            print(f"Message successfully delivered to topic {msg.topic()} and partition {msg.partition()}")
+            self.logger.debug(f"Message successfully delivered to topic {msg.topic()} and partition {msg.partition()}")
 
     def produce_messages(self, messages: List[str], wait_time: float = 0.1):
         """
@@ -54,15 +58,16 @@ class Messenger:
             wait_time (float): A time in seconds describing how long to block when waiting for callbacks on message production.
         """
         try:
+            self.logger.info(f"Attempting to produce {len(messages)} processed messages to topic {self.topic_name}...")
             for message in messages:
                 # Trigger any available callbacks from previous message delivery
-                print(f"Polling for callbacks with wait time {wait_time}")
+                self.logger.debug(f"Polling for callbacks with wait time {wait_time}")
                 self.producer.poll(wait_time)
 
                 # Produce the message with callback
-                print(f"Attempting to produce message {message} to topic {self.topic_name}")
+                self.logger.debug(f"Attempting to produce message {message} to topic {self.topic_name}")
                 self.producer.produce(self.topic_name, message.encode("utf-8"), callback=self.callback)
             self.producer.flush()
         except Exception as e:
-            print(f"Fatal error producing messages in messenger: {e}")
+            self.logger.critical(f"Fatal error producing messages in messenger: {e}")
             raise

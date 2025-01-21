@@ -1,5 +1,6 @@
 from confluent_kafka import Consumer, Message
 from typing import List, Optional
+import logging
 
 class Ingestor:
     """
@@ -14,7 +15,7 @@ class Ingestor:
         consumer (Consumer): The internal kafka message consumer.
         topic_name (str): The name of the topic to read from.
     """
-    def __init__(self, bootstrap_server: str, group_id: str, auto_offset_reset: str, topic_name: str):
+    def __init__(self, logger: logging.Logger, bootstrap_server: str, group_id: str, auto_offset_reset: str, topic_name: str):
         # Create kafka consumer and store topic
         consumer_config = {
             "bootstrap.servers": bootstrap_server,
@@ -24,14 +25,17 @@ class Ingestor:
 
         self.consumer = Consumer(consumer_config)
         self.topic_name = topic_name
+        self.logger = logger.getChild("ingestor")
 
     def __enter__(self):
         # Subscribe consumer to topic
+        self.logger.debug(f"Subscribing to topic {self.topic_name}...")
         self.consumer.subscribe([self.topic_name])
         return self
-    
+
     def __exit__(self, exc_type, exc_value, traceback):
         # Close connection to cluster and cleanup consumer
+        self.logger.debug("Closing consumer kafka connection...")
         self.consumer.close()
 
     def consume_messages(self, message_limit: int = 1, wait_time: float = 1.0) -> Optional[List[str]]:
@@ -48,11 +52,12 @@ class Ingestor:
         try:
             consumed_messages = self.consumer.consume(num_messages=message_limit, timeout=wait_time)
             if consumed_messages:
+                self.logger.info(f"Consumed {len(consumed_messages)} messages from topic {self.topic_name}...")
                 return self.__get_unerrored_messages(consumed_messages)
             else:
                 return None
         except Exception as e:
-            print(f"Fatal error consuming messages in ingestor: {e}")
+            self.logger.critical(f"Fatal error consuming messages in ingestor: {e}")
             raise
 
     def __get_unerrored_messages(self, consumed_messages: List[Message]) -> List[str]:
@@ -69,7 +74,7 @@ class Ingestor:
         for msg in consumed_messages:
             # Check for individual message errors
             if msg.error():
-                print(f"Error consuming message {msg.value().decode("utf-8")}: {msg.error()}")
+                self.logger.error(f"Error consuming message {msg.value().decode("utf-8")}: {msg.error()}")
             else:
                 unerrored_messages.append(msg.value().decode("utf-8"))
         return unerrored_messages
