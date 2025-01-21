@@ -6,6 +6,7 @@ class Messenger:
     Messenger class for producing messages and sending them to the kafka cluster.
 
     Args:
+        logger (Logger): The logger instance used to convey information for this class.
         bootstrap_server (str): The desired kafka broker to connect to.
         client_id (str): The client identifier for this messenger.
 

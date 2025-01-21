@@ -6,6 +6,7 @@ class Ingestor:
     Ingestion class for consuming messages from a kafka cluster into another system.
 
     Args:
+        logger (Logger): The logger instance used to convey information for this class.
         bootstrap_server (str): The desired kafka broker to connect to.
         group_id (str): The group identifier for this ingestor.
         auto_offset_reset (str): Offset location for the ingestor to begin reading messages from if no offset is found.

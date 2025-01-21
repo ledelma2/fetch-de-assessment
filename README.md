@@ -55,9 +55,9 @@
 - [ ] Create processor app
     - Python 3
     - [ ] "Process" the messages
-    - Send metrics to dashboards?
-    - Clean the data?
-    - Output statstics to console window?
+        - Clean the data?
+    - [ ] Compile statistics
+    - [ ] Report findings
 - [x] Create messenger app
     - Python 3
     - [x] Set up kafka producer member using confluent-kafka-python
