@@ -51,7 +51,7 @@ def main():
             if messages:
                 # Send message to processor for processing
                 logger.debug(f"Processing {len(messages)} ingested messages...")
-                processed_messages = prcsr.process_messages(messages)
+                processed_messages = prcsr.process_messages_and_report_findings(messages)
 
                 # Store processed message in new topic with messenger
                 logger.debug(f"Sending {len(processed_messages)} processed messages to kafka...")
