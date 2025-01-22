@@ -55,7 +55,7 @@
 - [ ] Create processor app
     - Python 3
     - [x] "Process" the messages
-        [x] Clean the data
+    - [x] Clean the data
     - [x] Compile statistics
     - [x] Report findings
     - [ ] Allow for concurrent processing
