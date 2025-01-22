@@ -57,6 +57,8 @@ def main():
                 logger.debug(f"Sending {len(processed_messages)} processed messages to kafka...")
                 msngr.produce_messages(processed_messages, float(os.environ["PRODUCER_WAIT_TIME"]))
 
+        prcsr.report_findings()
+
 if __name__ == "__main__":
     try:
         main()

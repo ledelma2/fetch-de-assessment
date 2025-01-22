@@ -54,10 +54,11 @@
     - [x] Graceful teardown on error/exit
 - [ ] Create processor app
     - Python 3
-    - [ ] "Process" the messages
-        - Clean the data?
-    - [ ] Compile statistics
-    - [ ] Report findings
+    - [x] "Process" the messages
+        [x] Clean the data
+    - [x] Compile statistics
+    - [x] Report findings
+    - [ ] Allow for concurrent processing
 - [x] Create messenger app
     - Python 3
     - [x] Set up kafka producer member using confluent-kafka-python

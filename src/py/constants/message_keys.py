@@ -1,0 +1,7 @@
+USER_ID = "user_id"
+DEVICE_TYPE = "device_type"
+DEVICE_ID = "device_id"
+TIMESTAMP = "timestamp"
+APP_VERSION = "app_version"
+IP_ADDRESS = "ip"
+LOCALE = "locale"
