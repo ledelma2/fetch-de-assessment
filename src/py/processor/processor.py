@@ -1,5 +1,6 @@
 import ast
 import asyncio
+from concurrent.futures import ProcessPoolExecutor
 from constants import message_keys
 from .data.activity_data_manager import ActivityDataManager
 from .data.device_data_manager import DeviceDataManager
@@ -27,10 +28,10 @@ class Processor:
         self.device_data_manager = DeviceDataManager(self.logger)
         self.ip_data_manager = IpDataManager(self.logger)
         self.user_data_manager = UserDataManager(self.logger)
-        self.activity_manager_lock = asyncio.Lock()
-        self.device_manager_lock = asyncio.Lock()
-        self.ip_manager_lock = asyncio.Lock()
-        self.user_manager_lock = asyncio.Lock()
+        self.activity_manager_async_lock = asyncio.Lock()
+        self.device_manager_async_lock = asyncio.Lock()
+        self.ip_manager_async_lock = asyncio.Lock()
+        self.user_manager_async_lock = asyncio.Lock()
 
     def __enter__(self):
         return self
@@ -40,7 +41,7 @@ class Processor:
 
     async def process_messages_and_report_findings_async(self, messages: list[str]) -> list[dict[str, str]]:
         """
-        Processes raw messages from kafka and reports some relevant findings based on the messages' contents.
+        Asynchronously and concurrently processes raw messages from kafka and reports some relevant findings based on the messages' contents.
 
         Args:
             messages (list[str]): A list of messages, as strings, to be processed.
@@ -48,18 +49,26 @@ class Processor:
         Returns:
             list[dict[str, str]]: A list of processed messages as dictionaries.
         """
-        processed_messages = []
         self.logger.info(f"Attempting to process {len(messages)} messages...")
-        for message in messages:
-            processed_message = self.process_message(message)
-            processed_messages.append(processed_message)
-            await self.compile_statistics_async(processed_message)
+        processed_messages = []
+
+        # Process messages quickly with multiprocessing
+        with ProcessPoolExecutor() as executor:
+            processed_messages = list(executor.map(self.process_message, messages))
+
+        # Create tasks to run concurrently in background
+        compile_stat_tasks = []
+        for processed_message in processed_messages:
+            compile_stat_tasks.append(asyncio.create_task(self.compile_statistics_async(processed_message)))
+
+        await asyncio.gather(*compile_stat_tasks)
+
         self.report_findings()
         return processed_messages
     
     def process_message(self, message: str) -> dict[str, str]:
         """
-        Method for processing raw messages from kafka.
+        Method for processing a single raw message from kafka.
 
         Args:
             message (str): The message to be processed.
@@ -103,19 +112,19 @@ class Processor:
         locale = processed_message[message_keys.LOCALE]
 
         # Wait for resource to unlock, then compile user statistics
-        async with self.user_manager_lock:
+        async with self.user_manager_async_lock:
             await self.user_data_manager.compile_user_data_async(user_id, timestamp, device_id)
 
         # Wait for resource to unlock, then compile device statistics
-        async with self.device_manager_lock:
+        async with self.device_manager_async_lock:
             await self.device_data_manager.compile_device_data_async(device_id, device_type, app_version, ip_address, locale)
 
         # Wait for resource to unlock, then compile ip statistics
-        async with self.ip_manager_lock:
+        async with self.ip_manager_async_lock:
             await self.ip_data_manager.compile_ip_data_async(ip_address, timestamp)
 
         # Wait for resource to unlock, then compile activity statistics
-        async with self.activity_manager_lock:
+        async with self.activity_manager_async_lock:
             await self.activity_data_manager.compile_activity_data_async(device_type, app_version, locale)
 
     def report_findings(self):

@@ -52,14 +52,14 @@
     - [x] Set up kafka consumer member using confluent-kafka-python
     - [x] Consume messages from a topic
     - [x] Graceful teardown on error/exit
-- [ ] Create processor app
+- [x] Create processor app
     - Python 3
     - [x] "Process" the messages
     - [x] Clean the data
     - [x] Compile statistics
     - [x] Report findings
     - [x] Make stat gathering async
-    - [ ] Allow for concurrent message processing
+    - [x] Allow for concurrent message processing
 - [x] Create messenger app
     - Python 3
     - [x] Set up kafka producer member using confluent-kafka-python
