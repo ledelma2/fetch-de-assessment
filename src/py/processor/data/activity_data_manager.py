@@ -16,7 +16,7 @@ class ActivityDataManager:
         self.locale_activity: dict[str, dict[str, int]] = {}
         self.logger = logger.getChild("activity_metric_manager")
 
-    def compile_activity_data(self, device_type: str, app_version: str, locale: str):
+    async def compile_activity_data_async(self, device_type: str, app_version: str, locale: str):
         """
         Method for compiling general activity data in the system.
 

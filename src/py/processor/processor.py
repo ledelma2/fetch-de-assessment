@@ -1,4 +1,5 @@
 import ast
+import asyncio
 from constants import message_keys
 from .data.activity_data_manager import ActivityDataManager
 from .data.device_data_manager import DeviceDataManager
@@ -26,6 +27,10 @@ class Processor:
         self.device_data_manager = DeviceDataManager(self.logger)
         self.ip_data_manager = IpDataManager(self.logger)
         self.user_data_manager = UserDataManager(self.logger)
+        self.activity_manager_lock = asyncio.Lock()
+        self.device_manager_lock = asyncio.Lock()
+        self.ip_manager_lock = asyncio.Lock()
+        self.user_manager_lock = asyncio.Lock()
 
     def __enter__(self):
         return self
@@ -33,7 +38,7 @@ class Processor:
     def __exit__(self, exc_type, exc_value, traceback):
         pass
 
-    def process_messages_and_report_findings(self, messages: list[str]) -> list[dict[str, str]]:
+    async def process_messages_and_report_findings_async(self, messages: list[str]) -> list[dict[str, str]]:
         """
         Processes raw messages from kafka and reports some relevant findings based on the messages' contents.
 
@@ -47,8 +52,8 @@ class Processor:
         self.logger.info(f"Attempting to process {len(messages)} messages...")
         for message in messages:
             processed_message = self.process_message(message)
-            self.compile_statistics(processed_message)
             processed_messages.append(processed_message)
+            await self.compile_statistics_async(processed_message)
         self.report_findings()
         return processed_messages
     
@@ -82,9 +87,9 @@ class Processor:
 
         return processed_message
     
-    def compile_statistics(self, processed_message: dict[str, str]):
+    async def compile_statistics_async(self, processed_message: dict[str, str]):
         """
-        Method for processing raw messages from kafka.
+        Asynchronously compiles statistics for the ingested the processed message.
 
         Args:
             processed_message (dict[str, str]): A dictionary of strings, representing a processed message's content.
@@ -97,17 +102,21 @@ class Processor:
         ip_address = processed_message[message_keys.IP_ADDRESS]
         locale = processed_message[message_keys.LOCALE]
 
-        # Compile user statistics
-        self.user_data_manager.compile_user_data(user_id, timestamp, device_id)
+        # Wait for resource to unlock, then compile user statistics
+        async with self.user_manager_lock:
+            await self.user_data_manager.compile_user_data_async(user_id, timestamp, device_id)
 
-        # Compile device statistics
-        self.device_data_manager.compile_device_data(device_id, device_type, app_version, ip_address, locale)
+        # Wait for resource to unlock, then compile device statistics
+        async with self.device_manager_lock:
+            await self.device_data_manager.compile_device_data_async(device_id, device_type, app_version, ip_address, locale)
 
-        # Compile ip statistics
-        self.ip_data_manager.compile_ip_data(ip_address, timestamp)
+        # Wait for resource to unlock, then compile ip statistics
+        async with self.ip_manager_lock:
+            await self.ip_data_manager.compile_ip_data_async(ip_address, timestamp)
 
-        # Compile activity statistics
-        self.activity_data_manager.compile_activity_data(device_type, app_version, locale)
+        # Wait for resource to unlock, then compile activity statistics
+        async with self.activity_manager_lock:
+            await self.activity_data_manager.compile_activity_data_async(device_type, app_version, locale)
 
     def report_findings(self):
         """

@@ -15,7 +15,7 @@ class DeviceDataManager:
         self.devices: dict[str, dict[str, str]] = {}
         self.logger = logger.getChild("device_metric_manager")
 
-    def compile_device_data(self, device_id: str, device_type: str, app_version: str, ip_address: str,  locale: str):
+    async def compile_device_data_async(self, device_id: str, device_type: str, app_version: str, ip_address: str,  locale: str):
         """
         Mehtod for compiling general device data into the system.
 

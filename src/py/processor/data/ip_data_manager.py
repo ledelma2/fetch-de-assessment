@@ -14,7 +14,7 @@ class IpDataManager:
         self.ip_logins: dict[str, list[int, int]] = {}
         self.logger = logger.getChild("ip_metric_manager")
 
-    def compile_ip_data(self, ip_address: str, timestamp: int):
+    async def compile_ip_data_async(self, ip_address: str, timestamp: int):
         """
         Method for compiling ip address data in the system.
 

@@ -58,7 +58,8 @@
     - [x] Clean the data
     - [x] Compile statistics
     - [x] Report findings
-    - [ ] Allow for concurrent processing
+    - [x] Make stat gathering async
+    - [ ] Allow for concurrent message processing
 - [x] Create messenger app
     - Python 3
     - [x] Set up kafka producer member using confluent-kafka-python

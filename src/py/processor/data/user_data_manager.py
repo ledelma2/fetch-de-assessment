@@ -16,7 +16,7 @@ class UserDataManager:
         self.users_and_devices: dict[str, list[str]] = {}
         self.logger = logger.getChild("user_metric_manager")
 
-    def compile_user_data(self, user_id: str, timestamp: int, device_id: str):
+    async def compile_user_data_async(self, user_id: str, timestamp: int, device_id: str):
         """
         Method for compiling user data into the system.
 

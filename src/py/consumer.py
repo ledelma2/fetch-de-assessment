@@ -1,6 +1,7 @@
 from ingestor.ingestor import Ingestor
 from messenger.messenger import Messenger
 from processor.processor import Processor
+import asyncio
 import logging
 import os
 import signal
@@ -31,7 +32,7 @@ def signal_handler(sig, frame):
     logger.info("Received termination signal. Shutting down...")
     running = False
 
-def main():
+async def main():
     """
     Main program loop for running the consumer.
     """
@@ -51,7 +52,7 @@ def main():
             if messages:
                 # Send message to processor for processing
                 logger.debug(f"Processing {len(messages)} ingested messages...")
-                processed_messages = prcsr.process_messages_and_report_findings(messages)
+                processed_messages = await prcsr.process_messages_and_report_findings_async(messages)
 
                 # Store processed message in new topic with messenger
                 logger.debug(f"Sending {len(processed_messages)} processed messages to kafka...")
@@ -61,7 +62,7 @@ def main():
 
 if __name__ == "__main__":
     try:
-        main()
+        asyncio.run(main())
     except Exception as e:
         logger.critical("An exception occurred...")
         logger.critical(f"Type: {type(e).__name__}")
