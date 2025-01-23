@@ -1,5 +1,9 @@
 import ast
 from constants import message_keys
+from .data.activity_data_manager import ActivityDataManager
+from .data.device_data_manager import DeviceDataManager
+from .data.ip_data_manager import IpDataManager
+from .data.user_data_manager import UserDataManager
 from datetime import datetime
 from logging import Logger
 
@@ -11,21 +15,17 @@ class Processor:
         logger (Logger): The logger instance used to convey information for this class.
 
     Attributes:
-        user_logins (dict[str, list[int]]): Dictionary of lists denoting total user logins as the first item and most recent login as the second, with the user_id as the key.
-        users_and_devices (dict[str, list[str]]): Dictionary of lists denoting user devices, with the user_id as the key.
-        devices (dict[str, dict[str, str]]): Dictionary of dictionaries denoting device information, with the device id as the key.
-        ip_logins (dict[str, list[int]]): Dictionary of lists denoting total logins from an ip address as the first item and most recent login as the second, with the ip as the key.
-        version_activity (dict[str, dict[str, int]]): Dictionary of app versions and the total number of logins for each.
-        locale_activity (dict[str, dict[str, int]]): Dictionary of locales and the total number of logins for each.
+        activity_data_manager (ActivityDataManager): The data manager for managing activity data.
+        device_data_manager (DeviceDataManager): The data manager for managing device data.
+        ip_data_manager (IpDataManager): The data manager for managing ip data.
+        user_data_manager (UserDataManager): The data manager for managing user data.
     """
     def __init__(self, logger: Logger):
-        self.user_logins: dict[str, list[int, int]] = {}
-        self.users_and_devices: dict[str, list[str]] = {}
-        self.devices: dict[str, dict[str, str]] = {}
-        self.ip_logins: dict[str, list[int, int]] = {}
-        self.version_activity: dict[str, dict[str, int]] = {}
-        self.locale_activity: dict[str, dict[str, int]] = {}
         self.logger = logger.getChild("processor")
+        self.activity_data_manager = ActivityDataManager(self.logger)
+        self.device_data_manager = DeviceDataManager(self.logger)
+        self.ip_data_manager = IpDataManager(self.logger)
+        self.user_data_manager = UserDataManager(self.logger)
 
     def __enter__(self):
         return self
@@ -54,7 +54,7 @@ class Processor:
     
     def process_message(self, message: str) -> dict[str, str]:
         """
-        Helper method for processing raw messages from kafka.
+        Method for processing raw messages from kafka.
 
         Args:
             message (str): The message to be processed.
@@ -84,7 +84,7 @@ class Processor:
     
     def compile_statistics(self, processed_message: dict[str, str]):
         """
-        Helper method for processing raw messages from kafka.
+        Method for processing raw messages from kafka.
 
         Args:
             processed_message (dict[str, str]): A dictionary of strings, representing a processed message's content.
@@ -96,37 +96,32 @@ class Processor:
         app_version = processed_message[message_keys.APP_VERSION]
         ip_address = processed_message[message_keys.IP_ADDRESS]
         locale = processed_message[message_keys.LOCALE]
+
         # Compile user statistics
-        if user_id not in self.users_and_devices:
-            self.__add_new_user_data(user_id, timestamp, device_id)
-        else:
-            self.__update_user_data(user_id, timestamp, device_id)
+        self.user_data_manager.compile_user_data(user_id, timestamp, device_id)
 
         # Compile device statistics
-        if device_id not in self.devices:
-            self.__add_new_device_data(device_id, device_type, app_version, ip_address, locale)
-        else:
-            self.__update_device_data(device_id, device_type, app_version, ip_address, locale)
+        self.device_data_manager.compile_device_data(device_id, device_type, app_version, ip_address, locale)
 
         # Compile ip statistics
-        if ip_address not in self.ip_logins:
-            self.__add_new_ip_data(ip_address, timestamp)
-        else:
-            self.__update_ip_data(ip_address, timestamp)
+        self.ip_data_manager.compile_ip_data(ip_address, timestamp)
 
-        # Compile activity data
-        self.__compile_activity_data(device_type, app_version, locale)
+        # Compile activity statistics
+        self.activity_data_manager.compile_activity_data(device_type, app_version, locale)
 
     def report_findings(self):
         """
-        Helper method for outputting statistical insights via the class's logger.
+        Method for outputting statistical insights via the class's internal logger.
         """
         # Report total unique users in the system
-        self.logger.info(f"There are {len(self.users_and_devices)} unique users in the system...")
+        self.logger.info(f"There are {len(self.user_data_manager.users_and_devices)} unique users in the system...")
+
+        # Report total unique devices in the system
+        self.logger.info(f"There are {len(self.device_data_manager.devices)} unique devices in the system...")
 
         # Report 10 most active users
         active_user_msg = f"Most active users in the system:\n"
-        most_active_users = dict(sorted(self.user_logins.items(), key=lambda item: item[1][0], reverse=True)[:10])
+        most_active_users = dict(sorted(self.user_data_manager.user_logins.items(), key=lambda item: item[1][0], reverse=True)[:10])
         for user, login_data in most_active_users.items():
             active_user_msg = active_user_msg + f"\tUser: {user}\n"
             active_user_msg = active_user_msg + f"\t\tTotal Logins: {login_data[0]}\n"
@@ -135,140 +130,15 @@ class Processor:
 
         # Report 10 most active ip's
         active_ip_msg = f"Most active ip's in the system:\n"
-        most_active_ips = dict(sorted(self.ip_logins.items(), key=lambda item: item[1][0], reverse=True)[:10])
+        most_active_ips = dict(sorted(self.ip_data_manager.ip_logins.items(), key=lambda item: item[1][0], reverse=True)[:10])
         for locale, login_data in most_active_ips.items():
-            active_ip_msg = active_ip_msg + f"\IP Address: {locale}\n"
+            active_ip_msg = active_ip_msg + f"\tIP Address: {locale}\n"
             active_ip_msg = active_ip_msg + f"\t\tTotal Logins: {login_data[0]}\n"
             active_ip_msg = active_ip_msg + f"\t\tLast Login: {datetime.fromtimestamp(login_data[1])}\n"
         self.logger.info(active_ip_msg)
 
         # Report version activity
-        self.logger.info(f"App version activity: {self.version_activity}")
+        self.logger.info(f"App version activity: {self.activity_data_manager.version_activity}")
 
         # Report locale activity
-        self.logger.info(f"Locale activity: {self.locale_activity}")
-
-    def __add_new_user_data(self, user_id: str, timestamp: int, device_id: str):
-        """
-        Private helper method for adding new user data to the system.
-
-        Args:
-            user_id (str): The identifier for the user.
-            timestamp (int): The timestamp of the login attempt.
-            device_id (str): The identifier for the device used in the login attempt.
-        """
-        # Create a user_logins entry
-        self.user_logins[user_id] = [1, timestamp]
-
-        # Create a user_and_devices entry
-        self.users_and_devices[user_id] = [device_id]
-
-    def __update_user_data(self, user_id: str, timestamp: int, device_id: str):
-        """
-        Private helper method for updating user data in the system.
-
-        Args:
-            user_id (str): The identifier for the user.
-            timestamp (int): The timestamp of the login attempt.
-            device_id (str): The identifier for the device used in the login attempt.
-        """
-        # Update user login total and, if needed, most recent login
-        self.user_logins[user_id][0] = self.user_logins[user_id][0] + 1
-        if timestamp > self.user_logins[user_id][1]:
-            self.user_logins[user_id][1] = timestamp
-
-        # Check for new user device
-        if device_id not in self.users_and_devices[user_id]:
-            self.users_and_devices[user_id].append(device_id)
-
-    def __add_new_device_data(self, device_id: str, device_type: str, app_version: str, ip_address: str,  locale: str):
-        """
-        Private helper method for adding new device data to the system.
-
-        Args:
-            device_id (str): The identifier for the device.
-            device_type (str): The type of the device being used.
-            app_version (str): The version of the app being used on the device.
-            ip_address (str): The ip address of the device's from the login attempt.
-            locale (str): The locale of the device from the login attempt.
-        """
-        device_data = {message_keys.DEVICE_TYPE: device_type, 
-                       message_keys.APP_VERSION: app_version,
-                       message_keys.IP_ADDRESS: ip_address,
-                       message_keys.LOCALE: locale}
-        self.devices[device_id] = device_data
-
-    def __update_device_data(self, device_id: str, device_type: str, app_version: str, ip_address: str,  locale: str):
-        """
-        Private helper method for updating device data in the system.
-
-        Args:
-            device_id (str): The identifier for the device.
-            device_type (str): The type of the device being used.
-            app_version (str): The version of the app being used on the device.
-            ip_address (str): The ip address of the device's from the login attempt.
-            locale (str): The locale of the device from the login attempt.
-        """
-        if self.devices[device_id][message_keys.DEVICE_TYPE] is not device_type:
-            self.devices[device_id][message_keys.DEVICE_TYPE] = device_type
-
-        if self.devices[device_id][message_keys.APP_VERSION] is not app_version:
-            self.devices[device_id][message_keys.APP_VERSION] = app_version
-
-        if self.devices[device_id][message_keys.IP_ADDRESS] is not ip_address:
-            self.devices[device_id][message_keys.IP_ADDRESS] = ip_address
-
-        if self.devices[device_id][message_keys.LOCALE] is not locale:
-            self.devices[device_id][message_keys.LOCALE] = locale
-
-    def __add_new_ip_data(self, ip_address: str, timestamp: int):
-        """
-        Private helper method for adding new ip address data in the system.
-
-        Args:
-            ip_address (str): The ip address from the login attempt.
-            timestamp (int): The timestamp of the login attempt.
-        """
-        self.ip_logins[ip_address] = [1, timestamp]
-
-    def __update_ip_data(self, ip_address: str, timestamp: int):
-        """
-        Private helper method for updating ip address data in the system.
-
-        Args:
-            ip_address (str): The ip address from the login attempt.
-            timestamp (int): The timestamp of the login attempt.
-        """
-        # Update ip address login total and, if needed, most recent login
-        self.user_logins[ip_address][0] = self.user_logins[ip_address][0] + 1
-        if timestamp > self.user_logins[ip_address][1]:
-            self.user_logins[ip_address][1] = timestamp
-
-    def __compile_activity_data(self, device_type: str, app_version: str, locale: str):
-        """
-        Private helper method for compiling general activity data in the system.
-
-        Args:
-            device_type (str): The type of the device being used.
-            app_version (str): The version of the app being used on the device.
-            locale (str): The locale of the device from the login attempt.
-        """
-        if app_version not in self.version_activity:
-            # Initialize new dictionary with current device type entry at app version
-            self.version_activity[app_version] = {device_type: 1}
-        elif device_type not in self.version_activity[app_version]:
-            # Create new device type entry at app version
-            self.version_activity[app_version][device_type] = 1
-        else:
-            # Update device type entry at app version
-            self.version_activity[app_version][device_type] = self.version_activity[app_version][device_type] + 1
-
-        if locale not in self.locale_activity:
-            # Initialize new dictionary with current device type entry at locale
-            self.locale_activity[locale] = {device_type: 1}
-        elif device_type not in self.locale_activity[locale]:
-            # Create new device type entry at locale
-            self.locale_activity[locale][device_type] = 1
-        else:
-            # Update device type entry at locale
-            self.locale_activity[locale][device_type] = self.locale_activity[locale][device_type] + 1
+        self.logger.info(f"Locale activity: {self.activity_data_manager.locale_activity}")
