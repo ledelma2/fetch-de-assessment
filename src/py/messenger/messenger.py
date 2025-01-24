@@ -26,13 +26,13 @@ class Messenger:
 
     def __enter__(self):
         # Wait for callbacks on any messages still waiting
-        self.logger.debug("Setting up producer...")
+        self.logger.info("Setting up producer...")
         self.producer.flush()
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         # Deliver any straggler messages that haven't been sent
-        self.logger.debug("Shutting down producer...")
+        self.logger.info("Shutting down producer...")
         self.producer.purge()
         self.producer.flush()
 
@@ -58,7 +58,7 @@ class Messenger:
             wait_time (float): A time in seconds describing how long to block when waiting for callbacks on message production.
         """
         try:
-            self.logger.info(f"Attempting to produce {len(messages)} processed messages to topic {self.topic_name}...")
+            self.logger.debug(f"Attempting to produce {len(messages)} processed messages to topic {self.topic_name}...")
             for message in messages:
                 # Trigger any available callbacks from previous message delivery
                 self.logger.debug(f"Polling for callbacks with wait time {wait_time}")

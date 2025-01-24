@@ -39,7 +39,7 @@ class Processor:
     def __exit__(self, exc_type, exc_value, traceback):
         pass
 
-    async def process_messages_and_report_findings_async(self, messages: list[str]) -> list[dict[str, str]]:
+    async def process_messages_async(self, messages: list[str]) -> list[dict[str, str]]:
         """
         Asynchronously and concurrently processes raw messages from kafka and reports some relevant findings based on the messages' contents.
 
@@ -49,21 +49,20 @@ class Processor:
         Returns:
             list[dict[str, str]]: A list of processed messages as dictionaries.
         """
-        self.logger.info(f"Attempting to process {len(messages)} messages...")
+        self.logger.debug(f"Attempting to process {len(messages)} messages...")
         processed_messages = []
 
         # Process messages quickly with multiprocessing
         with ProcessPoolExecutor() as executor:
             processed_messages = list(executor.map(self.process_message, messages))
 
-        # Create tasks to run concurrently in background
+        # Create tasks to compile stats concurrently in background
         compile_stat_tasks = []
         for processed_message in processed_messages:
             compile_stat_tasks.append(asyncio.create_task(self.compile_statistics_async(processed_message)))
 
         await asyncio.gather(*compile_stat_tasks)
 
-        self.report_findings()
         return processed_messages
     
     def process_message(self, message: str) -> dict[str, str]:
@@ -130,7 +129,8 @@ class Processor:
     def report_findings(self):
         """
         Method for outputting statistical insights via the class's internal logger.
-        """
+        """ 
+ 
         # Report total unique users in the system
         self.logger.info(f"There are {len(self.user_data_manager.users_and_devices)} unique users in the system...")
 
@@ -138,21 +138,21 @@ class Processor:
         self.logger.info(f"There are {len(self.device_data_manager.devices)} unique devices in the system...")
 
         # Report 10 most active users
-        active_user_msg = f"Most active users in the system:\n"
+        active_user_msg = f"Most active users in the system:"
         most_active_users = dict(sorted(self.user_data_manager.user_logins.items(), key=lambda item: item[1][0], reverse=True)[:10])
         for user, login_data in most_active_users.items():
-            active_user_msg = active_user_msg + f"\tUser: {user}\n"
-            active_user_msg = active_user_msg + f"\t\tTotal Logins: {login_data[0]}\n"
-            active_user_msg = active_user_msg + f"\t\tLast Login: {datetime.fromtimestamp(login_data[1])}\n"
+            active_user_msg = "\n".join([active_user_msg, f"\tUser: {user}"])
+            active_user_msg = "\n".join([active_user_msg, f"\t\tTotal Logins: {login_data[0]}"])
+            active_user_msg = "\n".join([active_user_msg, f"\t\tLast Login: {datetime.fromtimestamp(login_data[1])}"])
         self.logger.info(active_user_msg)
 
         # Report 10 most active ip's
-        active_ip_msg = f"Most active ip's in the system:\n"
+        active_ip_msg = f"Most active ip's in the system:"
         most_active_ips = dict(sorted(self.ip_data_manager.ip_logins.items(), key=lambda item: item[1][0], reverse=True)[:10])
         for locale, login_data in most_active_ips.items():
-            active_ip_msg = active_ip_msg + f"\tIP Address: {locale}\n"
-            active_ip_msg = active_ip_msg + f"\t\tTotal Logins: {login_data[0]}\n"
-            active_ip_msg = active_ip_msg + f"\t\tLast Login: {datetime.fromtimestamp(login_data[1])}\n"
+            active_ip_msg = "\n".join([active_ip_msg, f"\tIP Address: {locale}"])
+            active_ip_msg = "\n".join([active_ip_msg, f"\t\tTotal Logins: {login_data[0]}"])
+            active_ip_msg = "\n".join([active_ip_msg, f"\t\tLast Login: {datetime.fromtimestamp(login_data[1])}"])
         self.logger.info(active_ip_msg)
 
         # Report version activity

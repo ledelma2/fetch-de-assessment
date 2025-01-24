@@ -17,9 +17,9 @@ running = True
 
 # Setup logger with console handler and formatting
 logger = logging.getLogger("consumer")
-logger.setLevel(os.environ["LOGGER_LEVEL"])
+logger.setLevel(str(os.environ["LOGGER_LEVEL"]))
 ch = logging.StreamHandler()
-ch.setLevel(logging.INFO)
+ch.setLevel(str(os.environ["LOGGER_LEVEL"]))
 formatter = logging.Formatter("[%(levelname)s | %(name)s] %(asctime)s - %(message)s")
 ch.setFormatter(formatter)
 logger.addHandler(ch)
@@ -44,18 +44,18 @@ async def main():
     with (Ingestor(logger, os.environ["CONSUMER_BOOTSTRAP_SERVER"], os.environ["CONSUMER_GROUP_ID"], os.environ["CONSUMER_AUTO_OFFSET_RESET"], os.environ["CONSUMER_KAFKA_TOPIC"]) as ingstr,
           Messenger(logger, os.environ["PRODUCER_BOOTSTRAP_SERVER"], os.environ["PRODUCER_CLIENT_ID"], os.environ["PRODUCER_KAFKA_TOPIC"]) as msngr,
           Processor(logger) as prcsr):
+        logger.info("Starting message consumption from kafka...")
         while running:
             # Ingest message from ingestor
-            logger.debug("Ingesting messages from kafka...")
             messages = ingstr.consume_messages(int(os.environ["CONSUMER_MESSAGE_LIMIT"]), float(os.environ["CONSUMER_WAIT_TIME"]))
 
             if messages:
                 # Send message to processor for processing
-                logger.debug(f"Processing {len(messages)} ingested messages...")
-                processed_messages = await prcsr.process_messages_and_report_findings_async(messages)
+                logger.info(f"Processing {len(messages)} ingested messages...")
+                processed_messages = await prcsr.process_messages_async(messages)
 
                 # Store processed message in new topic with messenger
-                logger.debug(f"Sending {len(processed_messages)} processed messages to kafka...")
+                logger.info(f"Producing {len(processed_messages)} processed messages to kafka...")
                 msngr.produce_messages(processed_messages, float(os.environ["PRODUCER_WAIT_TIME"]))
 
         prcsr.report_findings()

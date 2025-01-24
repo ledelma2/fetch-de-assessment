@@ -18,12 +18,12 @@ services:
       CONSUMER_BOOTSTRAP_SERVER: kafka:9092
       CONSUMER_GROUP_ID: fetch-de-assessment-consumer
       CONSUMER_KAFKA_TOPIC: user-login
-      CONSUMER_MESSAGE_LIMIT: 1
-      CONSUMER_WAIT_TIME: 1.0
-      LOGGER_LEVEL: INFO
+      CONSUMER_MESSAGE_LIMIT: ${CONSUMER_MESSAGE_LIMIT}
+      CONSUMER_WAIT_TIME: ${CONSUMER_WAIT_TIME}
+      LOGGER_LEVEL: ${LOGGER_LEVEL}
       PRODUCER_BOOTSTRAP_SERVER: kafka:9092
       PRODUCER_CLIENT_ID: fetch-de-assessment-processor
       PRODUCER_KAFKA_TOPIC: processed-user-logins
-      PRODUCER_WAIT_TIME: 0.01
+      PRODUCER_WAIT_TIME: ${PRODUCER_WAIT_TIME}
     networks:
       - kafka-consumer-network

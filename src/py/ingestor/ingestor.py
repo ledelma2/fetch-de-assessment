@@ -29,13 +29,13 @@ class Ingestor:
 
     def __enter__(self):
         # Subscribe consumer to topic
-        self.logger.debug(f"Subscribing to topic {self.topic_name}...")
+        self.logger.info(f"Subscribing to topic {self.topic_name}...")
         self.consumer.subscribe([self.topic_name])
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         # Close connection to cluster and cleanup consumer
-        self.logger.debug("Closing consumer kafka connection...")
+        self.logger.info("Closing consumer kafka connection...")
         self.consumer.close()
 
     def consume_messages(self, message_limit: int = 1, wait_time: float = 1.0) -> list[str] | None:
