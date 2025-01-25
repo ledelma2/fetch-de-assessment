@@ -13,7 +13,7 @@
     - For Mac/Linux users, this can be done with the `python3 -h` command from a terminal window
 - Start the Docker Engine by launching the Docker Desktop app or running the command `sudo systemctl start docker` from a terminal window
 - Verify the docker engine is up, running, and accessible with the `docker info` command
-- Open a terminal, command prompt, or powershell window and navigate to the cloned repository
+- With administrator priveleges open a terminal, command prompt, or powershell window and navigate to the cloned repository
 - Run the `run_pipeline.py` python script to begin enviornment setup
     - For Windows the command is `python run_pipeline.py`
     - For Mac/Linux the command is `python3 run_pipeline.py`

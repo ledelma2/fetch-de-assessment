@@ -1,0 +1,4 @@
+{
+    "ComposeUpTimeout": 60,
+    "ComposeDownTimeout": 60
+}

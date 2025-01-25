@@ -1,5 +1,6 @@
 import platform
 import subprocess
+import sys
 import traceback
 
 """
@@ -16,7 +17,7 @@ def start_pipeline_ps1():
     """
     Starts the data pipeline ps1 script.
     """
-    subprocess.run(['powershell', "-ExecutionPolicy", "Bypass", '-File', './src/ps1/run-pipeline.ps1'])
+    subprocess.run(['powershell', "-NoExit", "-ExecutionPolicy", "Bypass", '-File', './src/ps1/run-pipeline.ps1'], check=True)
 
 def main():
     """
@@ -32,6 +33,7 @@ def main():
 if __name__ == "__main__":
     try:
         main()
+        sys.exit(0)
     except Exception as e:
         print("An exception occurred...")
         print(f"Type: {type(e).__name__}")
@@ -39,3 +41,4 @@ if __name__ == "__main__":
         print(f"Arguments: {e.args}")
         print("Traceback:")
         traceback.print_exc()
+        sys.exit(1)
