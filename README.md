@@ -21,62 +21,15 @@
 ## Running the Pipeline
 - Start the Docker Engine by launching the Docker Desktop app or running the command `sudo systemctl start docker` from a terminal window
 - Verify the docker engine is up, running, and accessible with the `docker info` command
-- With administrator priveleges open a terminal, command prompt, or powershell window and navigate to the cloned repository
+- With administrator priveleges open a terminal, if running on mac/linux, or powershell, if running on windows, and navigate to the cloned repository
 - Run the `run_pipeline.py` python script to begin enviornment setup
     - For Windows the command is `python run_pipeline.py`
     - For Mac/Linux the command is `python3 run_pipeline.py`
-
-## TODO
-- [x] Create single point of entry script
-    - Python3
-    - [x] Runs the setup for Windows
-    - [x] Runs the setup for other OS's
-    - [x] Shifts control to specific OS shell script
-- [x] Add automation for enviornment setup
-    - CLI Scripts with config files and enviornment variables
-    - Bash for linux/mac
-    - Powershell for windows
-    - [x] docker-compose.networks.yml
-        - [x] kafka-zookeeper-network
-        - [x] kafka-producer-network
-        - [x] kafka-consumer-network
-    - [x] docker-compose.zookeeper.yml
-        - [x] Add health check
-    - [x] docker-compose.kafka.yml
-        - [x] Add health check
-        - [x] Create topics
-            - [x] user-login
-            - [x] processed-user-logins
-    - [x] docker-compose.producer.yml
-        - [x] Add service_healthy requirements
-    - [x] docker-compose.consumer.yml
-        - [x] Build and tag consumer image
-        - [x] Add service_healthy requirements
-- [x] Create consumer app
-    - [x] Ingest consumed messages from the topic "user-login"
-    - [x] Process the messages and output metrics/stats
-    - [x] Send processed messages to the topic "processed-user-logins"
-- [x] Create ingestor app
-    - Python 3
-    - [x] Set up kafka consumer member using confluent-kafka-python
-    - [x] Consume messages from a topic
-    - [x] Graceful teardown on error/exit
-- [x] Create processor app
-    - Python 3
-    - [x] "Process" the messages
-    - [x] Clean the data
-    - [x] Compile statistics
-    - [x] Report findings
-    - [x] Make stat gathering async
-    - [x] Allow for concurrent message processing
-- [x] Create messenger app
-    - Python 3
-    - [x] Set up kafka producer member using confluent-kafka-python
-    - [x] Ingest messages into a topic
-    - [x] Graceful teardown on error/exit
-- [x] Add automation for environment teardown
-    - CLI Scripts with config files and enviornment variables
-    - Bash for linux/mac
-    - Powershell for windows
-    - [x] Error handling
-    - [x] Docker compose down script
+- The window will display some diagnostic information for building the consumer image and setting up the pipeline's dependencies in docker
+- When the pipeline is all setup a new terminal/powershell window will launch displaying logs from the consumer
+    - Do not close the first terminal/powershell window as this will be used for pipeline control later
+- In the new terminal/powershell window, verify that messages are being consumed, processed, and produced
+- When you are satisfied with the pipeline execution, navigate back to the original terminal/powershell
+    - Do not close the consumer window as diagnostic data will be displayed here after everything shuts down
+- Send an interupt signal (ctrl+c) to end execution of the pipeline
+- More diagnostic information will be produced to the original window while usage stats should appear on the second
