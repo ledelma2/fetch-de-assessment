@@ -1,3 +1,4 @@
+# Main loop control var
 $script:running = $true
 
 # Exit code
@@ -20,9 +21,11 @@ try {
     Set-Location src\ps1
     # Run docker compose up script
     ./docker-compose-up.ps1
-    # Log consumer data to the current terminal/shell window
+    # Log consumer data to a new terminal/shell window
     Start-Process powershell -ArgumentList '-NoExit', '-Command', 'docker compose logs -f my-python-consumer'
+    Write-Host "Pipeline successfully started, waiting for user stop signal..."
     while ($script:running) {
+        # Sleep until sigint or sigterm comes in from user
         Start-Sleep -Seconds 1
     }
     $ExitCode = 0

@@ -18,7 +18,7 @@ def start_pipeline_ps1():
     """
     Starts the data pipeline ps1 script.
     """
-    os.execvp("powershell", ["powershell", "-NoExit", "-ExecutionPolicy", "Bypass", "-File", "./src/ps1/run-pipeline.ps1"])
+    subprocess.run(["powershell", "-NoExit", "-ExecutionPolicy", "Bypass", "-File", "./src/ps1/run-pipeline.ps1"], check=True)
 
 def main():
     """
