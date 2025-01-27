@@ -1,7 +1,9 @@
 # fetch-de-assessment
  Data Engineer Assessment Project for Fetch Rewards
 
-# Steps to Run Pipeline
+# Instructions
+
+## General Setup
 - Clone the repository to a local directory
 - Download and install the latest version of Docker Desktop
     - Optionally, the standalone Docker Engine and Docker Compose Tool can be used instead of the Desktop app, though additional setup/debugging may be required 
@@ -11,6 +13,12 @@
 - Verify the Python CLI commands have been added to your system PATH
     - For windows users, this can be done with the `python -h` command from a terminal window
     - For Mac/Linux users, this can be done with the `python3 -h` command from a terminal window
+
+## Additional Setup for Non-Windows Users
+- Verify the `jq` package is installed and accesible through the command line
+- If running on linux verify `gnome-terminal` is installed and accesible through the command line
+
+## Running the Pipeline
 - Start the Docker Engine by launching the Docker Desktop app or running the command `sudo systemctl start docker` from a terminal window
 - Verify the docker engine is up, running, and accessible with the `docker info` command
 - With administrator priveleges open a terminal, command prompt, or powershell window and navigate to the cloned repository
@@ -23,6 +31,7 @@
     - Python3
     - [x] Runs the setup for Windows
     - [x] Runs the setup for other OS's
+    - [x] Shifts control to specific OS shell script
 - [x] Add automation for enviornment setup
     - CLI Scripts with config files and enviornment variables
     - Bash for linux/mac
@@ -65,14 +74,9 @@
     - [x] Set up kafka producer member using confluent-kafka-python
     - [x] Ingest messages into a topic
     - [x] Graceful teardown on error/exit
-- [ ] Add automation for environment teardown
+- [x] Add automation for environment teardown
     - CLI Scripts with config files and enviornment variables
     - Bash for linux/mac
     - Powershell for windows
-    - [ ] Error handling
-    - [ ] Compose down docker-compose-kafka-cluster.yml
-        - [ ] Verify cluster and container shutdown
-    - [ ] Compose down docker-compose-producer-cluster.yml
-        - [ ] Verify cluster and container shutdown
-    - [ ] Compose down docker-compose-consumer-cluster.yml
-        - [ ] Verify cluster and container shutdown
+    - [x] Error handling
+    - [x] Docker compose down script

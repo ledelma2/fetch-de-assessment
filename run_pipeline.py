@@ -1,3 +1,4 @@
+import os
 import platform
 import subprocess
 import sys
@@ -11,23 +12,23 @@ def start_pipeline_sh():
     """
     Starts the data pipeline bash script.
     """
-    subprocess.run(['bash', './src/sh/run-pipeline.sh'])
+    os.execvp("bash", ["bash", "./src/sh/run_pipeline.sh"])
 
 def start_pipeline_ps1():
     """
     Starts the data pipeline ps1 script.
     """
-    subprocess.run(['powershell', "-NoExit", "-ExecutionPolicy", "Bypass", '-File', './src/ps1/run-pipeline.ps1'], check=True)
+    os.execvp("powershell", ["powershell", "-NoExit", "-ExecutionPolicy", "Bypass", "-File", "./src/ps1/run-pipeline.ps1"])
 
 def main():
     """
     Main program loop for running the pipeline.
     """
-    if platform.system() == 'Windows':
+    if platform.system() == "Windows":
         print("Running on Windows...")
         start_pipeline_ps1()
     else:
-        print("Running on Linux/macOS/WSL...")
+        print("Running on Linux/macOS...")
         start_pipeline_sh()
 
 if __name__ == "__main__":
