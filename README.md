@@ -1,5 +1,25 @@
 # fetch-de-assessment
- Data Engineer Assessment Project for Fetch Rewards
+Data Engineer Assessment Project for Fetch Rewards
+
+# Design Overview
+The main drivers behind my design decisions were scalability and speed. Ideally, in a production enviornment, every major piece of the `consumer.py` class would be containerized and free to scale independantly. However, for the purposes of this assessment, I decided to make the classes a little more tightly coupled to simplify I/O and control flow.
+
+## Enviornment Setup and Teardown
+Enviornment setup and teardown is fairly straightforward. The main technology behind both is Docker, specifically the `docker compose` command. These compose commands are executed through shell scripts, either powershell or bash depending on the user's OS, which are in turn called by a primary "entry" python script.
+
+The primary force behind setup and teardown starts with a single python script at the top level of the repository. This single point of entry determines the user's operating system and calls the appropriate shell script to begin actual execution. A fair amount of thought was put into this specific design decision, as there was a strong argument to ditch the shell scripts and leverage python directly. I, however, felt it was more appropriate to execute cli commands through native OS scripting as it presented the oppurtunity for a more robust solution. Why overcomplicate control flow when there's a nice, simple solution already available? In addition, I also felt that the shell script method could better assist with deployment at scale, as one could hypothetically ditch the "entry" python script entirely in place of the appropriate shell scripts for the specific OS's of the VM's being used.
+
+Beyond the scripts, the enviornment setup and teardown solution also significantly utilizes configuration of `compose.yml` files. For starters, I was able to break apart the original compose file provided into multiple, service level files and reference them all in a single location. Needless to say, this not only decoupled most of the configuration logic, it also allowed for better scaling in the event that more powerful orchestration tools are implemented later on. Next, I decided to implement specific configurations to reference a local `dockerfile` and build the `consumer.py` image on-the-fly to further simplify setup. This small, yet powerful, change allows users to quickly modify and test the consumer source code without having to build and reference the image manually, it's all automated by docker. Lastly, I added some quality of life configurations such as health checks, startup dependency ordering, and configurable enviornment variables to provide a more robust solution according to the user's needs.
+
+## The Consumer
+
+## The Ingestor
+
+## The Processor
+
+## The Messenger
+
+---
 
 # Instructions
 
