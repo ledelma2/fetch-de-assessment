@@ -22,6 +22,7 @@ Following message ingestion the `processor.py` class takes over and begins work 
 
 ### The Messenger
 Lastly, after the messages have been ingested and processed, the `messenger.py` class executes. On initialization, this class sets a new logger context and a `Producer` property is created from the library `confluent_kafka`. The producer then calls its `flush` function to serve the designated callback for previous messages, just in case any failed to be delievered during a past run. When `produce_messages` is called the messenger will poll for any callbacks, waiting for the user defined `wait_time` if a callback is not triggered. The messenger then utilizes its producer member's `produce` function to actually produce a message to the outgoing kafka topic, looping through this functionality until all messages in the input list have been produced to the topic. After exiting the loop `flush` is called again to serve any callbacks that may be waiting. The `callback` function is very straightforward, as the messenger just checks to see if the produced message had any errors. Ideally some retry logic would be implemented to this callback for errored messages, as transient errors may occur, but for the purposes of the assessment just logging the error seemed to suffice. On shutdown of the pipeline all messages in the producer message queue are purged and the callbacks are serviced.
+
 ---
 
 # Instructions
