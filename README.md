@@ -63,9 +63,9 @@ Lastly, after the messages have been ingested and processed, the `messenger.py` 
 # TODO
 - [ ] Add unit tests
     - [ ] Processor
-        - [ ] Activity Data Manager
-        - [ ] Device Data Manager
-        - [ ] IP Data Manager
-        - [ ] User Data Manager
     - [ ] Messenger
     - [ ] Ingestor
+    - [ ] Activity Data Manager
+    - [ ] Device Data Manager
+    - [ ] IP Data Manager
+    - [ ] User Data Manager
