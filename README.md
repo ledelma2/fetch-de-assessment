@@ -57,3 +57,15 @@ Lastly, after the messages have been ingested and processed, the `messenger.py` 
     - Do not close the consumer window as diagnostic data will be displayed here after everything shuts down
 - Send an interupt signal (ctrl+c) to end execution of the pipeline
 - More diagnostic information will be produced to the original window while usage stats should appear on the second
+
+---
+
+# TODO
+- [ ] Add unit tests
+    - [ ] Processor
+        - [ ] Activity Data Manager
+        - [ ] Device Data Manager
+        - [ ] IP Data Manager
+        - [ ] User Data Manager
+    - [ ] Messenger
+    - [ ] Ingestor
