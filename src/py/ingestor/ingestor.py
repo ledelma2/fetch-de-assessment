@@ -75,7 +75,11 @@ class Ingestor:
         for msg in consumed_messages:
             # Check for individual message errors
             if msg.error():
-                self.logger.error(f"Error consuming message {msg.value().decode("utf-8")}: {msg.error()}")
+                err_msg = f"Error consuming message {msg.value().decode("utf-8")}: {msg.error().str()}"
+                self.logger.error(err_msg)
+                if msg.error().fatal():
+                    # Raise an exception for the fatal error
+                    raise Exception(err_msg)
             else:
                 unerrored_messages.append(msg.value().decode("utf-8"))
         return unerrored_messages
