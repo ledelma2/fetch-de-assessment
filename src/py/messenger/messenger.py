@@ -17,7 +17,7 @@ class Messenger:
     def __init__(self, logger: Logger, bootstrap_server: str, client_id: str, topic_name: str):
         producer_config = {
             "bootstrap.servers": bootstrap_server,
-            "client.id": client_id,
+            "client.id": client_id
         }
 
         self.producer = Producer(producer_config)
@@ -45,9 +45,13 @@ class Messenger:
             msg: The message associated with this specific callback.
         """
         if err is not None:
-            self.logger.warning(f"Failed to deliver message {msg} due to error {err}")
+            err_msg = f"Failed to deliver message '{msg.value().decode("utf-8")}' to topic {msg.topic()} and partition {msg.partition()}: {err.str()}"
+            self.logger.error(err_msg)
+            if err.fatal():
+                # Raise an exception for the fatal error
+                raise Exception(err.str())
         else:
-            self.logger.debug(f"Message successfully delivered to topic {msg.topic()} and partition {msg.partition()}")
+            self.logger.debug(f"Message '{msg.value().decode("utf-8")}' successfully delivered to topic {msg.topic()} and partition {msg.partition()}")
 
     def produce_messages(self, messages: list[dict[str, str]], wait_time: float = 0.1):
         """

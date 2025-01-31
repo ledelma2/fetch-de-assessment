@@ -79,7 +79,7 @@ class Ingestor:
                 self.logger.error(err_msg)
                 if msg.error().fatal():
                     # Raise an exception for the fatal error
-                    raise Exception(err_msg)
+                    raise Exception(msg.error().str())
             else:
                 unerrored_messages.append(msg.value().decode("utf-8"))
         return unerrored_messages

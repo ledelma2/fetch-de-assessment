@@ -1,4 +1,3 @@
-import pytest
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 from logging import Logger
@@ -99,8 +98,8 @@ class TestErroredConsumeMessages(TestCase):
             consumer_mock = MagicMock(spec=Consumer)
             message_mock = MagicMock(spec=Message)
             message_mock.value.return_value = "corrupted message".encode("utf-8")
-            message_mock.error.return_value = KafkaError(KafkaError.MEMBER_ID_REQUIRED, "Some error", fatal=True)
-            message_mock.error.str.return_value = "Some error"
+            message_mock.error.return_value = KafkaError(KafkaError.MEMBER_ID_REQUIRED, "Some fatal error", fatal=True)
+            message_mock.error.str.return_value = "Some fatal error"
             with patch("src.py.ingestor.ingestor.Consumer", return_value=consumer_mock):
                 _sut = Ingestor(logger, "broker:9092", "test-group", "earliest", "test-topic")
                 consumer_mock.consume.return_value = [message_mock]
@@ -111,8 +110,8 @@ class TestErroredConsumeMessages(TestCase):
                     
                     # Assert
                     consumer_mock.consume.assert_called_once()
-                    self.assertEqual(lcm.output, ["ERROR:consumer.ingestor:Error consuming message corrupted message: Some error"])
-                    self.assertTrue("Error consuming message corrupted message: Some error", ecm.exception)
+                self.assertEqual(lcm.output, ["ERROR:consumer.ingestor:Error consuming message corrupted message: Some fatal error", "CRITICAL:consumer.ingestor:Fatal error consuming messages in ingestor: Some fatal error"])
+                self.assertEqual("Some fatal error", str(ecm.exception))
 
     def test_ingestor_consume_partial_fatal_error_messages_raises(self):
         # Arrange
@@ -123,7 +122,7 @@ class TestErroredConsumeMessages(TestCase):
         success_message_mock.error.return_value = None
         error_message_mock = MagicMock(spec=Message)
         error_message_mock.value.return_value = "corrupted message".encode("utf-8")
-        error_message_mock.error.return_value = KafkaError(KafkaError.MEMBER_ID_REQUIRED, "Some error", fatal=True)
+        error_message_mock.error.return_value = KafkaError(KafkaError.MEMBER_ID_REQUIRED, "Some fatal error", fatal=True)
         with patch("src.py.ingestor.ingestor.Consumer", return_value=consumer_mock):
             _sut = Ingestor(logger, "broker:9092", "test-group", "earliest", "test-topic")
             consumer_mock.consume.return_value = [success_message_mock, error_message_mock]
@@ -134,5 +133,5 @@ class TestErroredConsumeMessages(TestCase):
                 
                 # Assert
                 consumer_mock.consume.assert_called_once()
-                self.assertEqual(lcm.output, ["ERROR:consumer.ingestor:Error consuming message corrupted message: Some error"])
-                self.assertTrue("Error consuming message corrupted message: Some error", ecm.exception)
+            self.assertEqual(lcm.output, ["ERROR:consumer.ingestor:Error consuming message corrupted message: Some fatal error", "CRITICAL:consumer.ingestor:Fatal error consuming messages in ingestor: Some fatal error"])
+            self.assertEqual("Some fatal error", str(ecm.exception))
