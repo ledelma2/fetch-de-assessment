@@ -62,7 +62,7 @@ Lastly, after the messages have been ingested and processed, the `messenger.py` 
 
 # TODO
 - [ ] Add unit tests
-    - [ ] Processor
+    - [x] Processor
     - [x] Messenger
     - [x] Ingestor
     - [ ] Activity Data Manager
