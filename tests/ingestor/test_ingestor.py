@@ -10,7 +10,6 @@ def test_ingestor_initialization():
     with patch("src.py.ingestor.ingestor.Consumer") as MockConsumer:
         # Act
         _sut = Ingestor(logger, "broker:9092", "test-group", "earliest", "test-topic")
-        
         # Assert
         MockConsumer.assert_called_once_with({
             "bootstrap.servers": "broker:9092",
@@ -41,10 +40,8 @@ def test_ingestor_consume_messages():
     with patch("src.py.ingestor.ingestor.Consumer", return_value=consumer_mock):
         _sut = Ingestor(logger, "broker:9092", "test-group", "earliest", "test-topic")
         consumer_mock.consume.return_value = [message_mock]
-        
         # Act
         messages = _sut.consume_messages(message_limit=1)
-        
         # Assert
         consumer_mock.consume.assert_called_once_with(num_messages=1, timeout=1.0)
         assert messages == ["test message"]
@@ -64,7 +61,6 @@ class TestErroredConsumeMessages(TestCase):
             with self.assertLogs(_sut.logger, level="ERROR") as cm:
                 # Act
                 messages = _sut.consume_messages(message_limit=1)
-                
                 # Assert
                 consumer_mock.consume.assert_called_once()
                 self.assertEqual(cm.output, ["ERROR:consumer.ingestor:Error consuming message corrupted message: Some error"])
@@ -86,7 +82,6 @@ class TestErroredConsumeMessages(TestCase):
             with self.assertLogs(_sut.logger, level="ERROR") as cm:
                 # Act
                 messages = _sut.consume_messages(message_limit=2)
-                
                 # Assert
                 consumer_mock.consume.assert_called_once()
                 self.assertEqual(cm.output, ["ERROR:consumer.ingestor:Error consuming message corrupted message: Some error"])
@@ -107,7 +102,6 @@ class TestErroredConsumeMessages(TestCase):
                       self.assertRaises(Exception) as ecm):
                     # Act
                     messages = _sut.consume_messages(message_limit=1)
-                    
                     # Assert
                     consumer_mock.consume.assert_called_once()
                 self.assertEqual(lcm.output, ["ERROR:consumer.ingestor:Error consuming message corrupted message: Some fatal error", "CRITICAL:consumer.ingestor:Fatal error consuming messages in ingestor: Some fatal error"])
@@ -130,7 +124,6 @@ class TestErroredConsumeMessages(TestCase):
                   self.assertRaises(Exception) as ecm):
                 # Act
                 messages = _sut.consume_messages(message_limit=2)
-                
                 # Assert
                 consumer_mock.consume.assert_called_once()
             self.assertEqual(lcm.output, ["ERROR:consumer.ingestor:Error consuming message corrupted message: Some fatal error", "CRITICAL:consumer.ingestor:Fatal error consuming messages in ingestor: Some fatal error"])

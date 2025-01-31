@@ -1,4 +1,4 @@
-from constants import message_keys
+from src.py.constants import message_keys
 from logging import Logger
 
 class DeviceDataManager:

@@ -1,7 +1,7 @@
 import ast
 import asyncio
 from concurrent.futures import ProcessPoolExecutor
-from constants import message_keys
+from src.py.constants import message_keys
 from .data.activity_data_manager import ActivityDataManager
 from .data.device_data_manager import DeviceDataManager
 from .data.ip_data_manager import IpDataManager

@@ -10,7 +10,6 @@ def test_initialization():
     with patch("src.py.messenger.messenger.Producer") as MockProducer:
         # Act
         _sut = Messenger(logger_mock, "broker:9092", "test-client-id", "test-topic")
-
     # Assert
     MockProducer.assert_called_once_with({
         "bootstrap.servers": "broker:9092",
