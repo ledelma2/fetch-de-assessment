@@ -1,5 +1,5 @@
 # fetch-de-assessment
-Data Engineer Assessment Project for Fetch Rewards
+Data Engineer Assessment Project for Fetch Rewards. Below you will find a section describing the design of the pipeline and its granualar components, and below that instructions for running in a local enviornment. Any specific questions or concerns can added as an issue to this repository or be sent via email to `ledelman1995@gmail.com`.
 
 # Design Overview
 The main drivers behind my design decisions were scalability and speed. Ideally, in a production enviornment, every major piece of the `consumer.py` class would be containerized and free to scale independantly. However, for the purposes of this assessment, I decided to make the classes a little more tightly coupled to simplify I/O and control flow.
@@ -27,6 +27,23 @@ Lastly, after the messages have been ingested and processed, the `messenger.py` 
 
 # Instructions
 
+## User Defined Configuration
+There exists two config files which can be used to help fine tune the pipeline's performance and its output. User's should only adjust these values if they have a good grasp on pipeline behavior within their own system. A full shutdown and restart of the pipeline is necessary for values in `config.json` to take effect, while only the `my-python-consumer` docker container will need to be restarted for `.env` value updates.
+
+### config.json
+This config file is located in the directory `src/config/config.json`. It contains two timeout values to assist in startup and shutdown of the docker enviornment.
+- `ComposeUpTimeout`: the value defining a timeout for the `docker compose up` command in seconds
+- `ComposeDownTimeout`: the value defining a timeout for the `docker compose down` command in seconds
+
+### .env
+This config file is located in the directory `src/config/.env`. It contains four user definied values to assist in operation of the `consumer.py` module and its companion classes.
+- `CONSUMER_MESSAGE_LIMIT`: the value defining how many messages the pipeline should attempt to consume at one time
+    - This value effectively "batches" the data in the pipeline
+    - Be warned, larger values may lead to resource contention on less powerful machines
+- `CONSUMER_WAIT_TIME`: the value defining how long the system should wait, in seconds, when trying to consume messages from the inbound kafka topic
+- `LOGGER_LEVEL`: the global logger level used for reporting diagnostic data
+- `PRODUCER_WAIT_TIME`: the value defining how long the system should wait, in seconds, when trying to produce messages to the outbound kafka topic
+
 ## General Setup
 - Clone the repository to a local directory
 - Download and install the latest version of Docker Desktop
@@ -38,7 +55,7 @@ Lastly, after the messages have been ingested and processed, the `messenger.py` 
     - For windows users, this can be done with the `python -h` command from a terminal window
     - For Mac/Linux users, this can be done with the `python3 -h` command from a terminal window
 
-## Additional Setup for Non-Windows Users
+### Additional Setup for Non-Windows Users
 - Verify the `jq` package is installed and accesible through the command line
 - If running on linux verify `gnome-terminal` is installed and accesible through the command line
 
