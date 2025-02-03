@@ -55,17 +55,5 @@ Lastly, after the messages have been ingested and processed, the `messenger.py` 
 - In the new terminal/powershell window, verify that messages are being consumed, processed, and produced
 - When you are satisfied with the pipeline execution, navigate back to the original terminal/powershell
     - Do not close the consumer window as diagnostic data will be displayed here after everything shuts down
-- Send an interupt signal (ctrl+c) to end execution of the pipeline
+- Send an interupt signal (ctrl+c) to the first terminal in which you ran the `run_pipeline.py` script, this will end execution of the pipeline
 - More diagnostic information will be produced to the original window while usage stats should appear on the second
-
----
-
-# TODO
-- [ ] Add unit tests
-    - [x] Processor
-    - [x] Messenger
-    - [x] Ingestor
-    - [ ] Activity Data Manager
-    - [ ] Device Data Manager
-    - [ ] IP Data Manager
-    - [ ] User Data Manager
